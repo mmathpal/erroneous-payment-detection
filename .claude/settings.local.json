@@ -17,7 +17,8 @@
       "Bash(pkill -f \"streamlit run\")",
       "Bash(find /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection -type d -name __pycache__ -exec rm -rf {} +)",
       "Bash(pkill -9 -f streamlit)",
-      "Bash(pkill -f streamlit)"
+      "Bash(pkill -f streamlit)",
+      "Bash(find /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection -name \"*.pyc\" -delete)"
     ],
     "deny": [],
     "ask": []

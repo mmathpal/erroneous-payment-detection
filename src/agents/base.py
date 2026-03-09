@@ -88,6 +88,7 @@ class Alert:
     risk_score: float = 0.0  # 0-100: Comprehensive risk score
     risk_level: str = "minimal"  # critical, high, medium, low, minimal
     risk_factors: List[str] = field(default_factory=list)
+    mitigating_factors: List[str] = field(default_factory=list)
 
     # Findings from agents
     agent_findings: List[FindingsObject] = field(default_factory=list)

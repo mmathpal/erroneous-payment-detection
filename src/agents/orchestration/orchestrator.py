@@ -169,6 +169,7 @@ class AnomalyDetectionOrchestrator:
             risk_score=risk_assessment.total_risk_score,
             risk_level=risk_assessment.risk_level.value,
             risk_factors=risk_assessment.risk_factors,
+            mitigating_factors=risk_assessment.mitigating_factors,
             agent_findings=findings,
             audit_log=[
                 {
@@ -235,7 +236,7 @@ class AnomalyDetectionOrchestrator:
         """
         report = []
         report.append("=" * 80)
-        report.append("EXPOSURE MANAGER - ANOMALY DETECTION REPORT")
+        report.append("EM PAYMENT RISK MANAGEMENT SYSTEM - RISK ASSESSMENT REPORT")
         report.append("=" * 80)
         report.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         report.append(f"Total Alerts: {len(alerts)}")
@@ -312,7 +313,7 @@ def main():
     print(report)
 
     # Optionally save to file
-    output_file = f"anomaly_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    output_file = f"payment_risk_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
     with open(output_file, "w") as f:
         f.write(report)
     print(f"\nReport saved to: {output_file}")

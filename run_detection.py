@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple runner for anomaly detection system
+Simple runner for EM Payment Risk Management System
 """
 
 import os
@@ -19,9 +19,9 @@ from src.agents.orchestration.orchestrator import AnomalyDetectionOrchestrator
 
 
 def main():
-    """Run anomaly detection"""
+    """Run payment risk analysis"""
     print("=" * 80)
-    print("EM ANOMALY DETECTION SYSTEM")
+    print("EM PAYMENT RISK MANAGEMENT SYSTEM")
     print("=" * 80)
     print()
 
@@ -49,7 +49,7 @@ def main():
         print(report)
 
         # Save report
-        output_file = f"anomaly_report_{orchestrator.rule_detector.db.execute_query('SELECT GETDATE() as now')[0]['now'].strftime('%Y%m%d_%H%M%S')}.txt"
+        output_file = f"payment_risk_report_{orchestrator.rule_detector.db.execute_query('SELECT GETDATE() as now')[0]['now'].strftime('%Y%m%d_%H%M%S')}.txt"
         with open(output_file, "w") as f:
             f.write(report)
 
@@ -57,14 +57,14 @@ def main():
 
         # Summary statistics
         print("\n" + "=" * 80)
-        print("SUMMARY STATISTICS")
+        print("RISK ASSESSMENT SUMMARY")
         print("=" * 80)
-        print(f"Total Alerts: {len(alerts)}")
-        print(f"Critical/High: {sum(1 for a in alerts if a.confidence_level.value in ['critical', 'high'])}")
-        print(f"Average Score: {sum(a.ensemble_score for a in alerts) / len(alerts):.2f}" if alerts else "N/A")
+        print(f"Total Payment Risk Alerts: {len(alerts)}")
+        print(f"Critical/High Risk: {sum(1 for a in alerts if a.confidence_level.value in ['critical', 'high'])}")
+        print(f"Average Risk Score: {sum(a.ensemble_score for a in alerts) / len(alerts):.2f}" if alerts else "N/A")
 
     except Exception as e:
-        print(f"\n✗ Error during detection: {e}")
+        print(f"\n✗ Error during risk analysis: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

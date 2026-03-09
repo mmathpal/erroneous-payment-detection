@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Streamlit Dashboard for EM Anomaly Detection System
+Streamlit Dashboard for EM Payment Risk Management System
 """
 
 import sys
@@ -26,8 +26,8 @@ from src.agents.base import Alert, SeverityLevel
 
 # Page config
 st.set_page_config(
-    page_title="EM Anomaly Detection",
-    page_icon="🔍",
+    page_title="EM Payment Risk Management",
+    page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -48,24 +48,37 @@ st.markdown("""
         margin: 0.5rem 0;
     }
     .alert-card {
-        border-left: 4px solid;
-        padding: 1rem;
-        margin: 1rem 0;
-        background-color: white;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 6px solid;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    .alert-card:hover {
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
     }
     .alert-critical {
         border-left-color: #d32f2f;
+        background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
     }
     .alert-high {
         border-left-color: #f57c00;
+        background: linear-gradient(135deg, #fff9f0 0%, #fff3e0 100%);
     }
     .alert-medium {
         border-left-color: #fbc02d;
+        background: linear-gradient(135deg, #fffef0 0%, #fffde7 100%);
     }
     .alert-low {
         border-left-color: #388e3c;
+        background: linear-gradient(135deg, #f5fff5 0%, #e8f5e9 100%);
+    }
+    .alert-minimal {
+        border-left-color: #9e9e9e;
+        background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
     }
     .risk-score {
         font-size: 2rem;
@@ -76,8 +89,8 @@ st.markdown("""
     .risk-medium { color: #fbc02d; }
     .risk-low { color: #388e3c; }
     .execution-log {
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
+        background-color: rgba(128, 128, 128, 0.1);
+        border: 1px solid rgba(128, 128, 128, 0.3);
         border-radius: 0.5rem;
         padding: 1rem;
         height: 500px;
@@ -86,10 +99,12 @@ st.markdown("""
         font-size: 0.85rem;
         line-height: 1.6;
         scroll-behavior: smooth;
+        color: inherit;
     }
     .log-entry {
         margin: 0.25rem 0;
         white-space: pre-wrap;
+        color: inherit;
     }
     button[data-testid="baseButton-secondary"] {
         min-width: 35px !important;
@@ -124,68 +139,148 @@ def format_risk_badge(risk_score: float, risk_level: str) -> str:
     return f'<span style="background-color: {color}; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-weight: bold;">{risk_score:.1f}/100 - {risk_level.upper()}</span>'
 
 
+def get_alert_title(alert: Alert) -> str:
+    """Generate descriptive alert title based on findings"""
+    if not alert.agent_findings:
+        return "Unknown Issue Detected"
+
+    # Get primary error type from highest severity finding
+    primary_finding = max(alert.agent_findings, key=lambda f: f.confidence_score)
+    error_type = primary_finding.error_type.value
+
+    # Map error types to user-friendly titles
+    title_map = {
+        "duplicate": f"🔄 Duplicate Payment - {alert.client_id}",
+        "date_anomaly": f"📅 Date Anomaly - {alert.client_id}",
+        "exposure_limit": f"⚠️ Exposure Limit Breach - {alert.client_id}",
+        "pv_discrepancy": f"💰 PV Discrepancy - {alert.client_id}",
+        "negative_value": f"➖ Negative Value Issue - {alert.client_id}",
+        "expired_trade": f"⏰ Expired Active Trade - {alert.client_id}",
+        "ml_anomaly": f"🤖 Unusual Pattern Detected - {alert.client_id}",
+        "data_quality": f"📊 Data Quality Issue - {alert.client_id}",
+    }
+
+    # Find matching title or use default
+    for key, title in title_map.items():
+        if key in error_type.lower():
+            return title
+
+    return f"🔍 Anomaly Detected - {alert.client_id}"
+
+
+def get_alert_icon(risk_level: str) -> str:
+    """Get icon for risk level"""
+    icons = {
+        "critical": "🚨",
+        "high": "⚠️",
+        "medium": "🟡",
+        "low": "ℹ️",
+        "minimal": "✅"
+    }
+    return icons.get(risk_level.lower(), "🔔")
+
+
 def render_alert_card(alert: Alert, index: int):
-    """Render a single alert card"""
+    """Render a single alert card with improved layout"""
 
     # Determine card class based on risk level
     card_class = f"alert-{alert.risk_level}"
+    alert_title = get_alert_title(alert)
+    risk_icon = get_alert_icon(alert.risk_level)
 
     with st.container():
         st.markdown(f'<div class="alert-card {card_class}">', unsafe_allow_html=True)
 
-        col1, col2, col3 = st.columns([2, 2, 1])
+        # Header row with title and risk badge
+        col1, col2 = st.columns([3, 1])
 
         with col1:
-            st.markdown(f"**Alert #{index + 1}**: {alert.client_id}")
-            st.caption(f"ID: {alert.alert_id[:8]}...")
+            st.markdown(f"### {risk_icon} {alert_title}")
+            st.caption(f"Alert ID: {alert.alert_id[:8]}... | {len(alert.agent_findings)} findings detected")
 
         with col2:
             st.markdown(format_risk_badge(alert.risk_score, alert.risk_level), unsafe_allow_html=True)
+            st.caption(f"Confidence: {alert.ensemble_score:.0%}")
 
-        with col3:
-            st.caption(f"Findings: {len(alert.agent_findings)}")
-            st.caption(f"Score: {alert.ensemble_score:.2f}")
+        # Quick summary metrics in cards
+        st.markdown("")
+        metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
+        with metric_col1:
+            st.metric("Risk Score", f"{alert.risk_score:.0f}/100")
+        with metric_col2:
+            st.metric("Severity", alert.confidence_level.value.title())
+        with metric_col3:
+            st.metric("Issues", len(alert.agent_findings))
+        with metric_col4:
+            st.metric("Risk Factors", len(alert.risk_factors))
 
         # Expandable details
-        with st.expander("📋 View Details"):
+        with st.expander("🔍 View Full Details", expanded=False):
 
-            # Risk factors
-            if alert.risk_factors:
-                st.markdown("**Key Risk Factors:**")
-                for factor in alert.risk_factors:
-                    st.markdown(f"• {factor}")
+            # Two-column layout for better organization
+            detail_col1, detail_col2 = st.columns([1, 1])
 
-            # Findings
-            st.markdown("**Detected Issues:**")
-            for finding in alert.agent_findings:
-                st.markdown(f"""
-                - **{finding.error_type.value}** ({finding.severity.value})
-                  - {finding.description}
-                  - Confidence: {finding.confidence_score:.2f}
-                  - Agent: {finding.agent_name}
-                """)
+            with detail_col1:
+                # Risk factors
+                st.markdown("#### 🎯 Key Risk Factors")
+                if alert.risk_factors:
+                    for idx, factor in enumerate(alert.risk_factors, 1):
+                        st.markdown(f"**{idx}.** {factor}")
+                else:
+                    st.info("No specific risk factors identified")
 
-            # Evidence
-            if alert.agent_findings:
-                st.markdown("**Evidence:**")
-                show_evidence = st.checkbox("Show raw evidence", key=f"evidence_{alert.alert_id}")
-                if show_evidence:
-                    for idx, finding in enumerate(alert.agent_findings):
-                        st.caption(f"Finding {idx + 1} - {finding.agent_name}")
-                        st.json(finding.evidence)
+            with detail_col2:
+                # Mitigating factors
+                st.markdown("#### ✅ Mitigating Factors")
+                mitigating_factors = getattr(alert, 'mitigating_factors', [])
+                if mitigating_factors:
+                    for idx, factor in enumerate(mitigating_factors, 1):
+                        st.markdown(f"**{idx}.** {factor}")
+                else:
+                    st.info("No mitigating factors found")
 
-            # Actions
             st.markdown("---")
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                if st.button("✓ Mark Reviewed", key=f"review_{alert.alert_id}"):
-                    st.success("Marked as reviewed")
-            with col2:
-                if st.button("🚨 Raise Case", key=f"case_{alert.alert_id}"):
-                    st.info("Case raised (not implemented)")
-            with col3:
-                if st.button("✗ Dismiss", key=f"dismiss_{alert.alert_id}"):
-                    st.warning("Dismissed")
+
+            # Findings with better formatting
+            st.markdown("#### 📋 Detected Issues")
+            for idx, finding in enumerate(alert.agent_findings, 1):
+                severity_emoji = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢", "minimal": "⚪"}.get(finding.severity.value.lower(), "⚫")
+
+                with st.container():
+                    st.markdown(f"""
+                    **{idx}. {severity_emoji} {finding.error_type.value.replace('_', ' ').title()}**
+                    📝 {finding.description}
+                    🎯 Confidence: {finding.confidence_score:.0%} | 🤖 Agent: {finding.agent_name}
+                    """)
+                    st.markdown("")
+
+            # Evidence section
+            st.markdown("---")
+            st.markdown("#### 🔬 Technical Evidence")
+            show_evidence = st.checkbox("Show detailed technical data", key=f"evidence_{alert.alert_id}")
+            if show_evidence:
+                for idx, finding in enumerate(alert.agent_findings, 1):
+                    with st.container():
+                        st.markdown(f"**Evidence {idx}** - {finding.agent_name}")
+                        st.json(finding.evidence)
+                        st.markdown("")
+
+        # Action buttons
+        st.markdown("---")
+        st.markdown("#### ⚡ Actions")
+        action_col1, action_col2, action_col3, action_col4 = st.columns(4)
+        with action_col1:
+            if st.button("✅ Mark Reviewed", key=f"review_{alert.alert_id}", use_container_width=True):
+                st.success("✓ Marked as reviewed")
+        with action_col2:
+            if st.button("🚨 Raise Case", key=f"case_{alert.alert_id}", use_container_width=True, type="primary"):
+                st.info("Case raised to operations team")
+        with action_col3:
+            if st.button("📧 Send Alert", key=f"email_{alert.alert_id}", use_container_width=True):
+                st.info("Alert sent to stakeholders")
+        with action_col4:
+            if st.button("❌ Dismiss", key=f"dismiss_{alert.alert_id}", use_container_width=True):
+                st.warning("Alert dismissed")
 
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -194,7 +289,7 @@ def main():
     """Main dashboard"""
 
     # Header
-    st.markdown('<div class="main-header">🔍 Exposure Manager - Anomaly Detection</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">🛡️ EM Payment Risk Management System</div>', unsafe_allow_html=True)
 
     # Sidebar
     with st.sidebar:
@@ -205,9 +300,10 @@ def main():
         has_api_key = bool(api_key) and api_key != "your-openai-api-key-here"
 
         # Detection options
-        st.subheader("Detection Engines")
-        use_ml = st.checkbox("Enable ML Detection", value=True)
-        use_llm = st.checkbox("Enable LLM Analysis", value=has_api_key, disabled=not has_api_key)
+        st.subheader("Risk Detection Engines")
+        use_rules = st.checkbox("Enable Rule-Based Detection", value=True, help="Deterministic rules for known payment error patterns")
+        use_ml = st.checkbox("Enable ML Detection", value=True, help="Machine learning anomaly detection (Isolation Forest)")
+        use_llm = st.checkbox("Enable LLM Analysis", value=has_api_key, disabled=not has_api_key, help="AI-powered risk analysis and insights (GPT-4o-mini)")
 
         st.subheader("Filters")
         min_risk_score = st.slider("Minimum Risk Score", 0, 100, 50)
@@ -219,7 +315,7 @@ def main():
         )
 
         st.subheader("Actions")
-        run_detection = st.button("🔄 Run Detection", type="primary", use_container_width=True)
+        run_detection = st.button("🔄 Run Risk Analysis", type="primary", use_container_width=True)
 
         st.divider()
 
@@ -249,7 +345,7 @@ def main():
     # Right column - Progress tracking (persistent placeholders)
     if st.session_state.show_progress:
         with progress_col:
-            st.markdown("### 🔄 Detection Progress")
+            st.markdown("### 🔄 Risk Analysis Progress")
             step_display = st.empty()
             agent_display = st.empty()
             progress_bar_placeholder = st.empty()
@@ -332,9 +428,9 @@ def main():
             # Step 1: Initialize
             step_display.markdown("### 📍 Step 1/6")
             agent_display.markdown("### Agent: Orchestration Agent")
-            status_text.markdown("**Initializing detection system...**")
+            status_text.markdown("**Initializing payment risk analysis...**")
             update_progress(5)
-            add_log("**[Orchestration Agent]** Initializing detection system...", "🔧")
+            add_log("**[Orchestration Agent]** Initializing payment risk analysis system...", "🔧")
 
             add_log("Loading configuration from .env", "⚙️")
             add_log(f"Database: SQL Server ({os.getenv('SQL_SERVER_HOST', 'localhost')})", "💾")
@@ -345,7 +441,8 @@ def main():
                 use_llm=use_llm and has_api_key,
                 openai_api_key=api_key if has_api_key else None
             )
-            add_log("✓ Rule-based engine initialized", "✅")
+            if use_rules:
+                add_log("✓ Rule-based engine initialized (8 rules)", "✅")
             if use_ml:
                 add_log("✓ ML engine initialized (Isolation Forest)", "✅")
             if use_llm and has_api_key:
@@ -354,67 +451,75 @@ def main():
 
             # Step 2: Rule-based detection
             step_display.markdown("### 📍 Step 2/6")
-            agent_display.markdown("### Agent: Rule-Based Detection Agent")
-            status_text.markdown("**Running rule-based detection (8 rules)...**")
-            add_log("", "")
-            add_log("**[Rule-Based Detection Agent]** Starting rule-based detection (8 rules)...", "🔍")
-            update_progress(12)
+            if use_rules:
+                agent_display.markdown("### Agent: Rule-Based Detection Agent")
+                status_text.markdown("**Running rule-based detection (8 rules)...**")
+                add_log("", "")
+                add_log("**[Rule-Based Detection Agent]** Starting rule-based detection (8 rules)...", "🔍")
+                update_progress(12)
 
-            # Split booking duplicates
-            add_log("Running Rule 1/8: Split booking duplicate detection...", "📌")
-            split_findings = orchestrator.rule_detector.detect_split_booking_duplicates()
-            add_log(f"  → Found {len(split_findings)} split booking duplicates", "📊")
-            update_progress(15)
+                # Split booking duplicates
+                add_log("Running Rule 1/8: Split booking duplicate detection...", "📌")
+                split_findings = orchestrator.rule_detector.detect_split_booking_duplicates()
+                add_log(f"  → Found {len(split_findings)} split booking duplicates", "📊")
+                update_progress(15)
 
-            # DRA duplicates
-            add_log("Running Rule 2/8: DRA duplicate detection...", "📌")
-            dra_findings = orchestrator.rule_detector.detect_dra_duplicates()
-            add_log(f"  → Found {len(dra_findings)} DRA duplicates", "📊")
-            update_progress(18)
+                # DRA duplicates
+                add_log("Running Rule 2/8: DRA duplicate detection...", "📌")
+                dra_findings = orchestrator.rule_detector.detect_dra_duplicates()
+                add_log(f"  → Found {len(dra_findings)} DRA duplicates", "📊")
+                update_progress(18)
 
-            # Trade duplicates
-            add_log("Running Rule 3/8: Trade duplicate detection...", "📌")
-            trade_dup_findings = orchestrator.rule_detector.detect_trade_duplicates()
-            add_log(f"  → Found {len(trade_dup_findings)} trade duplicates", "📊")
-            update_progress(21)
+                # Trade duplicates
+                add_log("Running Rule 3/8: Trade duplicate detection...", "📌")
+                trade_dup_findings = orchestrator.rule_detector.detect_trade_duplicates()
+                add_log(f"  → Found {len(trade_dup_findings)} trade duplicates", "📊")
+                update_progress(21)
 
-            # Date anomalies
-            add_log("Running Rule 4/8: Date anomaly detection...", "📌")
-            date_findings = orchestrator.rule_detector.detect_date_anomalies()
-            add_log(f"  → Found {len(date_findings)} date anomalies", "📊")
-            update_progress(24)
+                # Date anomalies
+                add_log("Running Rule 4/8: Date anomaly detection...", "📌")
+                date_findings = orchestrator.rule_detector.detect_date_anomalies()
+                add_log(f"  → Found {len(date_findings)} date anomalies", "📊")
+                update_progress(24)
 
-            # Exposure anomalies
-            add_log("Running Rule 5/8: Exposure anomaly detection...", "📌")
-            exposure_findings = orchestrator.rule_detector.detect_exposure_anomalies()
-            add_log(f"  → Found {len(exposure_findings)} exposure anomalies", "📊")
-            update_progress(27)
+                # Exposure anomalies
+                add_log("Running Rule 5/8: Exposure anomaly detection...", "📌")
+                exposure_findings = orchestrator.rule_detector.detect_exposure_anomalies()
+                add_log(f"  → Found {len(exposure_findings)} exposure anomalies", "📊")
+                update_progress(27)
 
-            # Expired active trades
-            add_log("Running Rule 6/8: Expired active trade detection...", "📌")
-            expired_findings = orchestrator.rule_detector.detect_expired_active_trades()
-            add_log(f"  → Found {len(expired_findings)} expired active trades", "📊")
-            update_progress(30)
+                # Expired active trades
+                add_log("Running Rule 6/8: Expired active trade detection...", "📌")
+                expired_findings = orchestrator.rule_detector.detect_expired_active_trades()
+                add_log(f"  → Found {len(expired_findings)} expired active trades", "📊")
+                update_progress(30)
 
-            # Negative values
-            add_log("Running Rule 7/8: Negative value detection...", "📌")
-            negative_findings = orchestrator.rule_detector.detect_negative_values()
-            add_log(f"  → Found {len(negative_findings)} negative value issues", "📊")
-            update_progress(33)
+                # Negative values
+                add_log("Running Rule 7/8: Negative value detection...", "📌")
+                negative_findings = orchestrator.rule_detector.detect_negative_values()
+                add_log(f"  → Found {len(negative_findings)} negative value issues", "📊")
+                update_progress(33)
 
-            # PV discrepancies
-            add_log("Running Rule 8/8: PV discrepancy detection...", "📌")
-            pv_findings = orchestrator.rule_detector.detect_pv_discrepancies()
-            add_log(f"  → Found {len(pv_findings)} PV discrepancies", "📊")
-            update_progress(36)
+                # PV discrepancies
+                add_log("Running Rule 8/8: PV discrepancy detection...", "📌")
+                pv_findings = orchestrator.rule_detector.detect_pv_discrepancies()
+                add_log(f"  → Found {len(pv_findings)} PV discrepancies", "📊")
+                update_progress(36)
 
-            rule_findings = (split_findings + dra_findings + trade_dup_findings +
-                           date_findings + exposure_findings + expired_findings +
-                           negative_findings + pv_findings)
+                rule_findings = (split_findings + dra_findings + trade_dup_findings +
+                               date_findings + exposure_findings + expired_findings +
+                               negative_findings + pv_findings)
 
-            add_log(f"✓ Rule-based detection complete: {len(rule_findings)} total findings", "✅")
-            status_text.markdown(f"**✓ Rule-based detection complete - {len(rule_findings)} findings**")
-            update_progress(40)
+                add_log(f"✓ Rule-based detection complete: {len(rule_findings)} total findings", "✅")
+                status_text.markdown(f"**✓ Rule-based detection complete - {len(rule_findings)} findings**")
+                update_progress(40)
+            else:
+                agent_display.markdown("### Agent: Rule-Based Detection Agent (Disabled)")
+                rule_findings = []
+                add_log("", "")
+                add_log("Rule-based detection disabled (skipped)", "⊘")
+                status_text.markdown("**Rule-based detection disabled**")
+                update_progress(40)
 
             # Step 3: ML detection
             add_log("", "")
@@ -535,20 +640,20 @@ def main():
             # Complete
             update_progress(100)
             add_log("", "")
-            add_log("✓ Detection pipeline completed successfully!", "🎉")
+            add_log("✓ Risk analysis completed successfully!", "🎉")
 
             step_display.markdown("### ✅ Complete")
             agent_display.markdown("### Status: All Agents Complete")
-            status_text.markdown(f"### ✅ Detection Complete!")
+            status_text.markdown(f"### ✅ Risk Analysis Complete!")
 
             st.session_state.alerts = alerts
 
             # Show success in main column
             with main_col:
-                st.success(f"✓ Detection Complete! Found {len(alerts)} alerts ({len(all_findings)} total findings) - {critical_high} critical/high risk")
+                st.success(f"✓ Risk Analysis Complete! Found {len(alerts)} payment risk alerts ({len(all_findings)} total findings) - {critical_high} critical/high risk")
 
         except Exception as e:
-            st.error(f"Error during detection: {str(e)}")
+            st.error(f"Error during risk analysis: {str(e)}")
             add_log(f"✗ Error: {str(e)}", "❌")
             st.exception(e)
 
@@ -600,15 +705,155 @@ def main():
                 ])
                 st.bar_chart(df_risk.set_index("Risk Level"))
 
-            # Alerts list
+            # Alerts table with pagination
             st.subheader(f"🚨 Alerts ({len(filtered_alerts)} shown)")
+            st.caption("💡 Click the 'View' button on any row to see full alert details")
 
             if filtered_alerts:
                 # Sort by risk score
                 filtered_alerts.sort(key=lambda x: x.risk_score, reverse=True)
 
-                for idx, alert in enumerate(filtered_alerts):
-                    render_alert_card(alert, idx)
+                # Pagination setup
+                if 'page_number' not in st.session_state:
+                    st.session_state.page_number = 0
+                if 'items_per_page' not in st.session_state:
+                    st.session_state.items_per_page = 10
+
+                # Pagination controls at top with items per page
+                col1, col2, col3, col4, col5, col6 = st.columns([0.8, 0.8, 1.5, 0.8, 0.8, 1.3])
+
+                with col1:
+                    if st.button("⏮️ First", disabled=st.session_state.page_number == 0, key="first_page"):
+                        st.session_state.page_number = 0
+                        # Clear any open modals
+                        for key in list(st.session_state.keys()):
+                            if key.startswith('show_modal_'):
+                                del st.session_state[key]
+                        st.rerun()
+
+                with col2:
+                    if st.button("◀️ Prev", disabled=st.session_state.page_number == 0, key="prev_page"):
+                        st.session_state.page_number -= 1
+                        # Clear any open modals
+                        for key in list(st.session_state.keys()):
+                            if key.startswith('show_modal_'):
+                                del st.session_state[key]
+                        st.rerun()
+
+                with col3:
+                    items_per_page = st.session_state.items_per_page
+                    total_pages = (len(filtered_alerts) - 1) // items_per_page + 1
+                    st.markdown(f"<div style='text-align: center; padding-top: 0.5rem;'>Page {st.session_state.page_number + 1} of {total_pages}</div>", unsafe_allow_html=True)
+
+                with col4:
+                    if st.button("Next ▶️", disabled=st.session_state.page_number >= total_pages - 1, key="next_page"):
+                        st.session_state.page_number += 1
+                        # Clear any open modals
+                        for key in list(st.session_state.keys()):
+                            if key.startswith('show_modal_'):
+                                del st.session_state[key]
+                        st.rerun()
+
+                with col5:
+                    if st.button("Last ⏭️", disabled=st.session_state.page_number >= total_pages - 1, key="last_page"):
+                        st.session_state.page_number = total_pages - 1
+                        # Clear any open modals
+                        for key in list(st.session_state.keys()):
+                            if key.startswith('show_modal_'):
+                                del st.session_state[key]
+                        st.rerun()
+
+                with col6:
+                    new_items = st.selectbox("Per page", [10, 25, 50, 100], index=[10, 25, 50, 100].index(st.session_state.items_per_page), key="items_per_page_select", label_visibility="visible")
+                    if new_items != st.session_state.items_per_page:
+                        st.session_state.items_per_page = new_items
+                        st.session_state.page_number = 0
+                        # Clear any open modals
+                        for key in list(st.session_state.keys()):
+                            if key.startswith('show_modal_'):
+                                del st.session_state[key]
+                        st.rerun()
+
+                # Paginate with current settings
+                items_per_page = st.session_state.items_per_page
+                total_pages = (len(filtered_alerts) - 1) // items_per_page + 1
+                start_idx = st.session_state.page_number * items_per_page
+                end_idx = start_idx + items_per_page
+                page_alerts = filtered_alerts[start_idx:end_idx]
+
+                # Track which modal to show
+                modal_to_show = None
+                modal_alert = None
+                modal_idx = None
+
+                # Display alerts as rows with action buttons
+                for idx, alert in enumerate(page_alerts):
+                    alert_title = get_alert_title(alert)
+                    risk_icon = get_alert_icon(alert.risk_level)
+
+                    # Check if this alert's modal should be shown
+                    if st.session_state.get(f'show_modal_{alert.alert_id}', False):
+                        modal_to_show = alert.alert_id
+                        modal_alert = alert
+                        modal_idx = start_idx + idx
+
+                    # Determine background color
+                    if alert.risk_level.upper() == 'CRITICAL':
+                        bg_color = '#ffe8e8'
+                    elif alert.risk_level.upper() == 'HIGH':
+                        bg_color = '#fff3e0'
+                    elif alert.risk_level.upper() == 'MEDIUM':
+                        bg_color = '#fffde7'
+                    elif alert.risk_level.upper() == 'LOW':
+                        bg_color = '#e8f5e9'
+                    else:
+                        bg_color = '#f5f5f5'
+
+                    # Create container with colored background
+                    with st.container():
+                        st.markdown(f'<div style="background-color: {bg_color}; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.25rem; border-left: 5px solid {get_risk_color(alert.risk_level)};">', unsafe_allow_html=True)
+
+                        col1, col2, col3, col4, col5, col6 = st.columns([0.5, 3, 1.5, 1, 1.2, 1])
+
+                        with col1:
+                            st.markdown(f"<div style='font-size: 2rem; text-align: center;'>{risk_icon}</div>", unsafe_allow_html=True)
+
+                        with col2:
+                            st.markdown(f"**{alert_title.replace(risk_icon, '').strip()}**")
+                            st.caption(f"ID: {alert.alert_id[:8]} | {alert.timestamp.strftime('%Y-%m-%d %H:%M')}")
+
+                        with col3:
+                            st.markdown(f"<div style='text-align: center;'><small>Risk Score</small><br><strong style='font-size: 1.1rem;'>{alert.risk_score:.0f}/100</strong></div>", unsafe_allow_html=True)
+
+                        with col4:
+                            st.markdown(f"<div style='text-align: center;'><small>Issues</small><br><strong style='font-size: 1.1rem;'>{len(alert.agent_findings)}</strong></div>", unsafe_allow_html=True)
+
+                        with col5:
+                            st.markdown(f"<div style='padding-top: 0.5rem;'>{format_risk_badge(alert.risk_score, alert.risk_level)}</div>", unsafe_allow_html=True)
+
+                        with col6:
+                            # View button that opens modal
+                            if st.button("👁️ View", key=f"view_{alert.alert_id}", use_container_width=True):
+                                # Clear all other modals
+                                for key in list(st.session_state.keys()):
+                                    if key.startswith('show_modal_'):
+                                        st.session_state[key] = False
+                                st.session_state[f'show_modal_{alert.alert_id}'] = True
+                                st.rerun()
+
+                        st.markdown('</div>', unsafe_allow_html=True)
+
+                # Show modal after loop (only one at a time)
+                if modal_to_show and modal_alert:
+                    @st.dialog(get_alert_title(modal_alert), width="large")
+                    def show_alert_details():
+                        render_alert_card(modal_alert, modal_idx)
+                        if st.button("Close", use_container_width=True):
+                            st.session_state[f'show_modal_{modal_to_show}'] = False
+                            st.rerun()
+
+                    show_alert_details()
+
             else:
                 st.info("No alerts match the current filters")
 
@@ -622,19 +867,19 @@ def main():
                     st.download_button(
                         label="Download Report",
                         data=report,
-                        file_name=f"anomaly_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                        file_name=f"payment_risk_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                         mime="text/plain"
                     )
 
         else:
-            st.info("👈 Click 'Run Detection' in the sidebar to start")
+            st.info("👈 Click 'Run Risk Analysis' in the sidebar to start payment risk assessment")
 
 
 def generate_text_report(alerts: List[Alert]) -> str:
     """Generate text report for export"""
     report = []
     report.append("=" * 80)
-    report.append("EXPOSURE MANAGER - ANOMALY DETECTION REPORT")
+    report.append("EM PAYMENT RISK MANAGEMENT SYSTEM - RISK ASSESSMENT REPORT")
     report.append("=" * 80)
     report.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     report.append(f"Total Alerts: {len(alerts)}")

@@ -1,14 +1,14 @@
-# Erroneous Payment Detection System - POC
+# EM Payment Risk Management System - POC
 
-A proof-of-concept intelligent system for detecting erroneous payments in Exposure Manager (EM) using AI agents, RAG (Retrieval-Augmented Generation), and rule-based detection.
+A proof-of-concept intelligent system for payment risk management and erroneous payment detection in Exposure Manager (EM) using AI agents, machine learning, and risk scoring.
 
-**Status**: ✅ POC Complete | **Team**: Barclays Capital - OTC Clearing | **Timeline**: 3-Day POC
+**Status**: ✅ POC Complete | **Team**: OTC Clearing Operations | **Timeline**: 3-Day POC
 
 ---
 
 ## POC Scope
 
-This POC demonstrates automated detection of erroneous payments in Exposure Manager with:
+This POC demonstrates automated payment risk assessment and erroneous payment detection in Exposure Manager with:
 
 ### ✅ Implemented Features
 - **Duplicate Booking Detection**: Detects split booking patterns (R+D delivery types) within configurable time windows
@@ -273,10 +273,10 @@ poetry run pytest --cov=src --cov-report=html
 ## Business Value
 
 ### Immediate Benefits
-- **Automated Detection**: Catches errors before payment settlement
-- **Real-time Alerts**: Operations team notified immediately
-- **Evidence-Based**: Complete proof for investigation
-- **Confidence Scoring**: Prioritize high-confidence cases
+- **Automated Risk Assessment**: Identifies payment risks before settlement
+- **Real-time Alerts**: Operations team notified immediately with risk scores
+- **Evidence-Based**: Complete proof for investigation and remediation
+- **Risk Scoring**: Comprehensive 0-100 risk scores prioritize critical cases
 
 ### Risk Mitigation
 - **Financial**: Prevent duplicate payments (like XYZ123 incident)
@@ -337,18 +337,18 @@ poetry run pre-commit run --all-files
 ## Contact
 
 **Developer**: Sr. Software Engineer
-**Team**: Exposure Manager, Barclays Capital
-**Department**: OTC Clearing
+**Team**: Exposure Manager
+**Department**: OTC Clearing Operations
 **Timeline**: 3-Day POC (Completed)
 
 ---
 
 ## License
 
-Internal Barclays Capital Project
+MIT License - Open Source Project
 
 ---
 
 ## Acknowledgments
 
-Built for Exposure Manager team to demonstrate AI-powered erroneous payment detection capabilities. Successfully detected real XYZ123 incident pattern from March 5, 2024.
+Built for Exposure Manager team to demonstrate AI-powered payment risk management capabilities. Successfully detected real XYZ123 incident pattern from March 5, 2024 with comprehensive risk scoring.
