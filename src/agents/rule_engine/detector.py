@@ -95,7 +95,7 @@ class RuleBasedDetector:
                 value_date=str(row['transaction_date']),
                 error_type=ErrorType.SPLIT_BOOKING_ERROR,
                 severity=SeverityLevel.HIGH,
-                confidence_score=0.95,
+                confidence_score=1.0,
                 description=f"Split booking duplicate detected for balance {row['collateral_balance_id']}",
                 evidence={
                     "collateral_balance_id": row['collateral_balance_id'],
@@ -195,7 +195,7 @@ class RuleBasedDetector:
                 value_date=None,
                 error_type=ErrorType.DUPLICATE_BOOKING,
                 severity=SeverityLevel.HIGH,
-                confidence_score=0.92,
+                confidence_score=1.0,
                 description=f"Duplicate trade reference: {row['src_trade_ref']}",
                 evidence={
                     "src_trade_ref": row['src_trade_ref'],
@@ -278,7 +278,7 @@ class RuleBasedDetector:
                 value_date=None,
                 error_type=ErrorType.MARGIN_SWING,
                 severity=SeverityLevel.HIGH,
-                confidence_score=0.85,
+                confidence_score=1.0,
                 description=f"Exposure anomaly: Exposure {row['ratio']:.1f}x notional for {row['src_trade_ref']}",
                 evidence={
                     "src_trade_ref": row['src_trade_ref'],
@@ -320,7 +320,7 @@ class RuleBasedDetector:
                 value_date=str(row['maturity_date']),
                 error_type=ErrorType.EOD_BOUNDARY_CROSSING,
                 severity=SeverityLevel.MEDIUM,
-                confidence_score=0.88,
+                confidence_score=1.0,
                 description=f"Active trade past maturity: {row['src_trade_ref']}",
                 evidence={
                     "src_trade_ref": row['src_trade_ref'],

@@ -1,24 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(poetry --version)",
-      "Bash(mkdir -p src/agents/{rule_engine,ml_engine,llm_engine,orchestration})",
-      "Bash(sed -i '' 's|from src.agents.orchestrator import|from src.agents.orchestration.orchestrator import|g' run_detection.py)",
-      "Bash(python run_detection.py)",
-      "Bash(tree -L 3 -I '__pycache__|*.pyc|.git' src/)",
-      "Bash(mkdir -p src/agents/risk_scoring)",
-      "Bash(pip install python-dotenv -q)",
-      "Bash(tree -L 3 -I '__pycache__|*.pyc|.git' /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection)",
-      "Bash(python -c \"from src.config import settings; print(f''Project root: {settings.project_root}''); print(f''Data dir: {settings.data_dir}'')\")",
-      "Bash(python /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection/run_detection.py)",
-      "Bash(chmod +x /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection/run_dashboard.py)",
-      "Bash(python run_dashboard.py)",
-      "Bash(python -m py_compile src/ui/dashboard.py)",
-      "Bash(pkill -f \"streamlit run\")",
-      "Bash(find /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection -type d -name __pycache__ -exec rm -rf {} +)",
-      "Bash(pkill -9 -f streamlit)",
-      "Bash(pkill -f streamlit)",
-      "Bash(find /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection -name \"*.pyc\" -delete)"
+      "Bash(python -c \"\n# Reset the global singleton to test loading\nimport src.rag.indexer as rag_module\nrag_module._global_indexer = None\n\n# Now get indexer - should auto-load from disk\nfrom src.rag.indexer import get_rag_indexer\n\nindexer = get_rag_indexer()\nstats = indexer.get_stats()\n\nprint(f''Loaded from disk:'')\nprint(f''  Total documents: {stats[\"\"total_documents\"\"]}'')\nprint(f''  Model: {stats[\"\"model_name\"\"]}'')\nprint(f''  Incident types: {stats[\"\"incident_types\"\"]}'')\n\")"
     ],
     "deny": [],
     "ask": []
