@@ -26,21 +26,16 @@ class RuleBasedDetector:
 
     def detect_all_anomalies(self) -> List[FindingsObject]:
         """
-        Run all rule-based detections
+        Run all rule-based detections (simplified POC - 3 core rules only)
 
         Returns:
             List of FindingsObject for each anomaly detected
         """
         findings = []
 
-        # Run all detections
+        # Run 3 core detections for POC
         findings.extend(self.detect_split_booking_duplicates())
         findings.extend(self.detect_dra_duplicates())
-        findings.extend(self.detect_trade_duplicates())
-        findings.extend(self.detect_date_anomalies())
-        findings.extend(self.detect_exposure_anomalies())
-        findings.extend(self.detect_expired_active_trades())
-        findings.extend(self.detect_negative_values())
         findings.extend(self.detect_pv_discrepancies())
 
         return findings

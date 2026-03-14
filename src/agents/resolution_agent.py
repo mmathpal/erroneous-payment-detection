@@ -41,25 +41,37 @@ class ResolutionRecommendation:
 
 class ResolutionAgent:
     """
-    RAG-powered resolution agent
+    RAG-powered resolution agent with optional LLM enhancement
 
     Responsibilities:
     1. Take findings from other agents as input
     2. Use RAG to retrieve similar historical incidents
     3. Extract common resolution patterns
-    4. Generate recommended action steps
+    4. Generate recommended action steps using LLM (if available)
     5. Return explanation and recommendations
     """
 
-    def __init__(self, min_similarity: float = 0.3):
+    def __init__(self, min_similarity: float = 0.3, openai_api_key: Optional[str] = None):
         """
         Initialize resolution agent
 
         Args:
             min_similarity: Minimum similarity score for RAG matches (0-1)
+            openai_api_key: OpenAI API key for LLM-enhanced recommendations
         """
         self.min_similarity = min_similarity
+        self.openai_api_key = openai_api_key
         self.indexer = get_rag_indexer()
+
+        # Initialize LLM client if API key provided
+        self.llm_client = None
+        if openai_api_key:
+            try:
+                from openai import OpenAI
+                self.llm_client = OpenAI(api_key=openai_api_key)
+                print(f"[ResolutionAgent] LLM client initialized for enhanced recommendations")
+            except Exception as e:
+                print(f"[ResolutionAgent] Warning: Could not initialize LLM client: {e}")
 
         # Load sample incidents if indexer is empty
         if self.indexer.get_stats()['total_documents'] == 0:
@@ -135,8 +147,13 @@ class ResolutionAgent:
         # Take top 3
         top_incidents = unique_incidents[:3]
 
-        # Generate explanation
-        explanation = self._generate_explanation(findings, top_incidents, ensemble_score)
+        # Generate explanation using LLM if available, otherwise use template
+        if self.llm_client:
+            print(f"[ResolutionAgent] Using LLM to generate explanation")
+            explanation = self._generate_llm_explanation(findings, top_incidents, ensemble_score)
+        else:
+            print(f"[ResolutionAgent] No LLM client available, using template")
+            explanation = self._generate_explanation(findings, top_incidents, ensemble_score)
 
         # Extract common resolution steps
         recommended_steps = self._extract_resolution_steps(top_incidents, findings)
@@ -302,6 +319,105 @@ class ResolutionAgent:
             return customized_steps
 
         return []
+
+    def _generate_llm_explanation(
+        self,
+        findings: List[FindingsObject],
+        similar_incidents: List[Dict[str, Any]],
+        ensemble_score: float
+    ) -> str:
+        """
+        Generate LLM-powered explanation and recommendations
+
+        Args:
+            findings: List of findings
+            similar_incidents: Similar historical incidents
+            ensemble_score: Ensemble confidence score
+
+        Returns:
+            LLM-generated explanation string
+        """
+        # Build context for LLM
+        findings_context = []
+        for finding in findings:
+            findings_context.append({
+                "type": finding.error_type.value,
+                "description": finding.description,
+                "confidence": finding.confidence_score,
+                "severity": finding.severity.value,
+                "evidence": finding.evidence
+            })
+
+        incidents_context = []
+        for incident in similar_incidents:
+            incidents_context.append({
+                "title": incident["title"],
+                "description": incident["description"],
+                "similarity": f"{incident['similarity_score']:.0%}",
+                "resolution_steps": incident["resolution_steps"],
+                "outcome": incident["outcome"]
+            })
+
+        # Create prompt
+        prompt = f"""You are an expert in payment risk management for OTC clearing operations.
+Analyze the following payment risk detection findings and provide a clear, actionable recommendation.
+
+**Current Findings:**
+"""
+        for i, finding in enumerate(findings_context, 1):
+            prompt += f"\n{i}. [{finding['type']}] {finding['description']}"
+            prompt += f"\n   Confidence: {finding['confidence']:.0%}, Severity: {finding['severity']}"
+
+        prompt += f"\n\n**Overall Detection Confidence:** {ensemble_score:.0%}"
+
+        if incidents_context:
+            prompt += "\n\n**Similar Past Incidents:**"
+            for i, incident in enumerate(incidents_context, 1):
+                prompt += f"\n\n{i}. {incident['title']} (Similarity: {incident['similarity']})"
+                prompt += f"\n   Description: {incident['description']}"
+                prompt += f"\n   Resolution: {incident['resolution_steps'][0] if incident['resolution_steps'] else 'N/A'}"
+                prompt += f"\n   Outcome: {incident['outcome']}"
+
+        prompt += """
+
+**Your Task:**
+Provide a concise recommendation in 2-3 paragraphs that:
+1. Summarizes what was detected and why it's concerning
+2. Explains the likely root cause based on similar incidents
+3. Recommends specific actions to resolve this issue
+4. Mentions any immediate risks or urgency
+
+Keep the response professional, clear, and actionable for operations team members."""
+
+        try:
+            print(f"[ResolutionAgent] Calling OpenAI GPT-4o-mini API...")
+            # Call OpenAI API
+            response = self.llm_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an expert payment risk analyst specializing in OTC clearing operations. Provide clear, actionable recommendations based on detection findings and historical incident patterns."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=0.3,  # Low temperature for more consistent, factual responses
+                max_tokens=500
+            )
+
+            explanation = response.choices[0].message.content.strip()
+            print(f"[ResolutionAgent] LLM response received ({len(explanation)} chars)")
+            return explanation
+
+        except Exception as e:
+            print(f"[ResolutionAgent] ERROR - LLM call failed: {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            # Fallback to template-based explanation
+            return self._generate_explanation(findings, similar_incidents, ensemble_score)
 
     def _calculate_confidence(
         self,

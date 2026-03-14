@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c \"\n# Reset the global singleton to test loading\nimport src.rag.indexer as rag_module\nrag_module._global_indexer = None\n\n# Now get indexer - should auto-load from disk\nfrom src.rag.indexer import get_rag_indexer\n\nindexer = get_rag_indexer()\nstats = indexer.get_stats()\n\nprint(f''Loaded from disk:'')\nprint(f''  Total documents: {stats[\"\"total_documents\"\"]}'')\nprint(f''  Model: {stats[\"\"model_name\"\"]}'')\nprint(f''  Incident types: {stats[\"\"incident_types\"\"]}'')\n\")"
+      "Bash(poetry install)",
+      "Bash(npm i -g @anthropic-ai/claude-code)",
+      "Bash(claude doctor)",
+      "Bash(chmod +x /Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection/convert_to_pptx.sh)",
+      "Bash(git restore src/agents/llm_engine/ src/agents/resolution_agent.py src/mcp_servers/ src/rag/)",
+      "Bash(git restore src/ml_training/train_models.py)",
+      "Bash(git restore src/ml_training/)",
+      "Bash(poetry run streamlit run src/ui/dashboard.py)",
+      "Bash(poetry add pyodbc)",
+      "Bash(poetry show)",
+      "Bash(git restore src/ui/dashboard.py)",
+      "Bash(python -m py_compile src/ui/dashboard.py)"
     ],
     "deny": [],
     "ask": []

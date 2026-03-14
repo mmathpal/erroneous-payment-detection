@@ -24,7 +24,7 @@ from src.agents.resolution_agent import ResolutionAgent
 
 class AnomalyDetectionOrchestrator:
     """
-    Orchestrator that coordinates all detection agents
+    Simplified Orchestrator for POC (Rule + ML + LLM + RAG)
     """
 
     def __init__(
@@ -35,50 +35,54 @@ class AnomalyDetectionOrchestrator:
         openai_api_key: Optional[str] = None
     ):
         """
-        Initialize orchestrator
+        Initialize orchestrator (simplified POC with LLM/RAG)
 
         Args:
             use_ml: Enable ML-based detection
-            use_llm: Enable LLM analysis
-            use_rag: Enable RAG-powered resolution recommendations
-            openai_api_key: OpenAI API key for LLM analyzer
+            use_llm: Enable LLM analysis (optional)
+            use_rag: Enable RAG resolution recommendations
+            openai_api_key: OpenAI API key for LLM
         """
         self.use_ml = use_ml
         self.use_llm = use_llm
         self.use_rag = use_rag
 
-        # Initialize agents
+        # Initialize agents (simplified: 3 rules, trade ML, optional LLM/RAG)
         self.rule_detector = RuleBasedDetector()
         self.ml_detector = MLAnomalyDetector() if use_ml else None
-        self.llm_analyzer = LLMAnalyzer(api_key=openai_api_key) if use_llm else None
+        self.llm_analyzer = LLMAnalyzer(api_key=openai_api_key) if use_llm and openai_api_key else None
         self.risk_scorer = RiskScorer()
-        self.resolution_agent = ResolutionAgent() if use_rag else None
+        # Pass API key to ResolutionAgent for LLM-enhanced recommendations
+        if use_rag:
+            self.resolution_agent = ResolutionAgent(openai_api_key=openai_api_key)
+        else:
+            self.resolution_agent = None
 
         # Weights for ensemble scoring
         self.weights = {
-            "rule_based": 0.50,  # High weight - rules are deterministic
-            "ml_based": 0.30,    # Medium weight - ML is probabilistic
-            "llm_confidence": 0.20  # Lower weight - LLM is advisory
+            "rule_based": 0.50,
+            "ml_based": 0.30,
+            "llm_confidence": 0.20
         }
 
     def run_full_detection(self) -> List[Alert]:
         """
-        Run complete anomaly detection pipeline
+        Run simplified detection pipeline with optional LLM/RAG
 
         Returns:
             List of Alert objects
         """
-        print("=== Starting Anomaly Detection ===\n")
+        print("=== Starting Anomaly Detection (Simplified POC) ===\n")
 
-        # Step 1: Rule-based detection
-        print("1. Running rule-based detection...")
+        # Step 1: Rule-based detection (3 rules only)
+        print("1. Running rule-based detection (3 rules)...")
         rule_findings = self.rule_detector.detect_all_anomalies()
         print(f"   Found {len(rule_findings)} anomalies\n")
 
-        # Step 2: ML-based detection
+        # Step 2: ML-based detection (trade anomalies only)
         ml_findings = []
         if self.use_ml and self.ml_detector:
-            print("2. Running ML-based detection...")
+            print("2. Running ML-based detection (trade anomalies)...")
             ml_findings = self.ml_detector.detect_all_anomalies()
             print(f"   Found {len(ml_findings)} anomalies\n")
 
@@ -86,7 +90,7 @@ class AnomalyDetectionOrchestrator:
         all_findings = rule_findings + ml_findings
         print(f"3. Total findings: {len(all_findings)}\n")
 
-        # Step 4: Group by entity (client_id or trade_ref)
+        # Step 4: Group by entity
         grouped_findings = self._group_findings(all_findings)
         print(f"4. Grouped into {len(grouped_findings)} entities\n")
 
@@ -96,48 +100,26 @@ class AnomalyDetectionOrchestrator:
             alert = self._create_alert(entity_id, findings)
             alerts.append(alert)
 
-        # Step 6: RAG-based resolution recommendations (if enabled)
+        # Step 6: RAG-based resolution (if enabled)
         if self.use_rag and self.resolution_agent:
-            print("5. Running RAG-based resolution analysis...")
-            rag_count = 0
+            print("5. Running RAG resolution recommendations...")
             for alert in alerts:
-                # Only generate recommendations for high-confidence alerts
                 if alert.ensemble_score >= 0.5:
                     recommendation = self.resolution_agent.analyze_findings(
                         alert.agent_findings,
                         alert.ensemble_score
                     )
-
                     if recommendation:
                         alert.resolution_recommendation = recommendation.explanation
                         alert.audit_log.append({
                             "timestamp": datetime.now().isoformat(),
-                            "action": "rag_resolution_analysis",
-                            "similar_incidents_found": len(recommendation.similar_incidents),
-                            "rag_confidence": recommendation.confidence,
-                            "recommended_steps": recommendation.recommended_steps
+                            "action": "rag_resolution",
+                            "similar_incidents": len(recommendation.similar_incidents),
+                            "confidence": recommendation.confidence
                         })
-                        rag_count += 1
+            print("   RAG recommendations added\n")
 
-            print(f"   Generated {rag_count} RAG-based recommendations\n")
-
-        # Step 7: LLM analysis (if enabled and RAG not used)
-        if self.use_llm and self.llm_analyzer and all_findings and not self.use_rag:
-            print("6. Running LLM analysis...")
-            llm_analysis = self.llm_analyzer.analyze_anomalies(all_findings)
-
-            # Add LLM insights to alerts
-            for alert in alerts:
-                if llm_analysis:
-                    alert.resolution_recommendation = llm_analysis.get("summary", "")
-                    alert.audit_log.append({
-                        "timestamp": datetime.now().isoformat(),
-                        "action": "llm_analysis",
-                        "insights": llm_analysis.get("insights", [])
-                    })
-            print("   LLM analysis completed\n")
-
-        # Step 8: Sort alerts by risk score (primary) and ensemble score (secondary)
+        # Step 7: Sort alerts
         alerts.sort(key=lambda x: (x.risk_score, x.ensemble_score), reverse=True)
 
         print(f"=== Detection Complete: {len(alerts)} Alerts Generated ===\n")
@@ -241,7 +223,7 @@ class AnomalyDetectionOrchestrator:
             if ml_findings else 0.0
         )
 
-        # LLM confidence boost (if multiple findings, increase confidence)
+        # LLM confidence boost (if multiple findings)
         llm_boost = min(len(findings) * 0.1, 0.3)
 
         # Calculate weighted ensemble score
@@ -322,17 +304,17 @@ class AnomalyDetectionOrchestrator:
 
 
 def main():
-    """Main execution"""
+    """Main execution (simplified POC with optional LLM/RAG)"""
     import os
 
-    # Get OpenAI API key from environment
+    # Get API key from environment
     api_key = os.getenv("OPENAI_API_KEY")
 
-    # Initialize orchestrator
+    # Initialize orchestrator (simplified: 3 rules + trade ML + optional LLM/RAG)
     orchestrator = AnomalyDetectionOrchestrator(
         use_ml=True,
-        use_llm=bool(api_key),  # Only use LLM if API key available
-        use_rag=True,  # Enable RAG-based resolution recommendations
+        use_llm=bool(api_key),  # Enable if API key available
+        use_rag=True,  # Enable RAG recommendations
         openai_api_key=api_key
     )
 

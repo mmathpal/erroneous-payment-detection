@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # Application
-    app_name: str = "Exposure Manager - Erroneous Payment Detection"
+    app_name: str = "EM- Payment Risk Management System"
     app_version: str = "0.1.0"
     debug: bool = True
 
