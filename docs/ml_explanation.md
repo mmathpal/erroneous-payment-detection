@@ -63,7 +63,7 @@ Used to timestamp findings when they are created.
 ```python
 from typing import List, Dict, Any
 ```
-Type hint helpers. `List[FindingsObject]` makes the return type of functions self-documenting.
+Type hint helpers. `List[FindingsObject]` makes the return type of functions self-documenting. `Dict` and `Any` are imported but not directly used in this file — they are kept for consistency with other agents and in case evidence dicts are typed explicitly in future.
 
 ```python
 import numpy as np
@@ -167,7 +167,7 @@ Prints a confirmation showing when the model was trained and how much data it sa
 
 ---
 
-### `detect_trade_anomalies` — SQL Query (lines 40–64)
+### `detect_trade_anomalies` — SQL Query (lines 53–144)
 
 ```python
 def detect_trade_anomalies(self) -> List[FindingsObject]:
@@ -680,6 +680,21 @@ Standalone training function. Key differences from the old in-detector training:
 No `TOP 100` here — fetches everything. The detector uses `TOP 100` at inference for speed, but the training data should be as large as possible.
 
 ```python
+    results = db.execute_query(query)
+    print(f"   Fetched {len(results)} trade records\n")
+
+    if len(results) < 50:
+        print("⚠ Warning: Less than 50 records. Model may not be reliable.")
+        print("   Minimum recommended: 100+ records\n")
+```
+Data quality gate. Does **not** abort — training continues — but warns the user. Isolation Forest needs sufficient data to find meaningful clusters. With fewer than 50 records the "normal" pattern is poorly defined and the model will produce unreliable anomaly scores. 100+ records is the recommended minimum.
+
+```python
+    df = pd.DataFrame(results)
+```
+Converts the list of dicts from the database into a DataFrame for vectorised feature engineering.
+
+```python
     df['exposure_ratio'] = df['exposure'] / df['notional_1']
     df['pv_discrepancy'] = df.apply(...)
     feature_cols = ['exposure', 'exposure_ratio', 'pv_discrepancy']
@@ -704,10 +719,60 @@ Identical feature engineering to `detector.py`. **This must stay in sync.** If y
 `fit()` not `fit_predict()` — we only need a trained model, not predictions on the training data.
 
 ```python
+    predictions = model.predict(X_scaled)
+    anomaly_count = (predictions == -1).sum()
+    print(f"   Detected {anomaly_count} anomalies ({anomaly_count/len(predictions)*100:.1f}%)\n")
+```
+Post-training sanity check. Runs `predict` on the training data and counts how many records were labelled `-1` (anomaly). The percentage should be roughly equal to `contamination` (e.g. 10% if `contamination=0.1`). A wildly different percentage suggests the data distribution is unexpected.
+
+```python
+    model_path = settings.models_dir / "trade_anomaly_model.pkl"
+    joblib.dump(model_artifact, model_path)
+
+    file_size = model_path.stat().st_size / 1024
+    print(f"   ✓ Model saved to: {model_path}")
+    print(f"   Size: {file_size:.1f} KB\n")
+```
+`.stat().st_size` returns bytes; dividing by 1024 gives KB. Printed as confirmation — a typical Isolation Forest with 100 trees should be a few hundred KB.
+
+```python
+    print("\nNext steps:")
+    print("  - Model will be used automatically by ML detector")
+    print("  - Run detection to see results")
+    print("  - Re-train periodically with: poetry run python train_ml_model.py")
+```
+Reminder shown after successful training — tells the user exactly what to do next.
+
+---
+
+### `main()` (lines 138–151)
+
+```python
 def main():
     train_trade_anomaly_model(contamination=settings.isolation_forest_contamination)
 ```
 Now reads contamination from `settings.isolation_forest_contamination` (default `0.1` in `settings.py`, overridable via `.env`). Previously hardcoded to `0.15`. This means you can change contamination in one place (`.env` or `settings.py`) and it applies to both training and inference.
+
+```python
+    try:
+        train_trade_anomaly_model(contamination=settings.isolation_forest_contamination)
+        print("\n✅ Training successful!\n")
+    except Exception as e:
+        print(f"\n❌ Training failed: {str(e)}\n")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+```
+Wraps the training call in a `try/except` so any failure (database connection error, insufficient data, disk write error) is caught cleanly.
+- `print(f"\n❌ Training failed: {str(e)}\n")` — prints the error message in plain English
+- `traceback.print_exc()` — prints the full Python stack trace so you can see exactly which line caused the failure. This is imported inside the `except` block (lazy import) since it is only ever needed on failure.
+- `sys.exit(1)` — exits with code `1` (non-zero = failure). This is important for CI/CD pipelines or shell scripts that check the exit code to know if training succeeded.
+
+```python
+if __name__ == "__main__":
+    main()
+```
+Only runs `main()` when the script is executed directly. If `train_ml_model` were ever imported as a module (unlikely but possible), this prevents accidental training on import.
 
 ```python
     model_artifact = {
