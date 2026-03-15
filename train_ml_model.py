@@ -23,6 +23,7 @@ import joblib
 import numpy as np
 
 from src.database.connection import DatabaseConnection
+from src.config.settings import settings
 
 
 def train_trade_anomaly_model(contamination: float = 0.15):
@@ -103,9 +104,6 @@ def train_trade_anomaly_model(contamination: float = 0.15):
 
     # Save model
     print("6. Saving model...")
-    models_dir = Path("models")
-    models_dir.mkdir(exist_ok=True)
-
     model_artifact = {
         'model': model,
         'scaler': scaler,
@@ -117,7 +115,7 @@ def train_trade_anomaly_model(contamination: float = 0.15):
         'detected_anomalies': int(anomaly_count)
     }
 
-    model_path = models_dir / "trade_anomaly_model.pkl"
+    model_path = settings.models_dir / "trade_anomaly_model.pkl"
     joblib.dump(model_artifact, model_path)
 
     file_size = model_path.stat().st_size / 1024
@@ -140,7 +138,7 @@ def train_trade_anomaly_model(contamination: float = 0.15):
 def main():
     """Main training function"""
     try:
-        train_trade_anomaly_model(contamination=0.15)
+        train_trade_anomaly_model(contamination=settings.isolation_forest_contamination)
         print("\n✅ Training successful!\n")
     except Exception as e:
         print(f"\n❌ Training failed: {str(e)}\n")

@@ -13,29 +13,42 @@ sys.path.insert(0, str(project_root))
 from datetime import datetime
 from typing import List, Dict, Any
 import numpy as np
-from sklearn.ensemble import IsolationForest
-from sklearn.preprocessing import StandardScaler
+import joblib
 import pandas as pd
 
 from src.agents.base import FindingsObject, ErrorType, SeverityLevel
 from src.database.connection import DatabaseConnection
+from src.config.settings import settings
+
+
+MODEL_PATH = settings.models_dir / "trade_anomaly_model.pkl"
 
 
 class MLAnomalyDetector:
-    """Simplified ML-based anomaly detection for POC"""
+    """ML-based anomaly detection using a pre-trained Isolation Forest model."""
 
-    def __init__(self, contamination: float = 0.15):
+    def __init__(self):
         """
-        Initialize ML detector (simplified for POC)
+        Initialize ML detector by loading the pre-trained model from disk.
 
-        Args:
-            contamination: Expected proportion of anomalies (default 0.15 = 15%)
+        Raises:
+            FileNotFoundError: If the model file does not exist. Run train_ml_model.py first.
         """
         self.db = DatabaseConnection(database="EM")
         self.agent_name = "MLAnomalyDetector"
-        self.contamination = contamination
-        self.model = None
-        self.scaler = StandardScaler()
+
+        if not MODEL_PATH.exists():
+            raise FileNotFoundError(
+                f"Model file not found at {MODEL_PATH}. "
+                "Please run: poetry run python train_ml_model.py"
+            )
+
+        artifact = joblib.load(MODEL_PATH)
+        self.model = artifact["model"]
+        self.scaler = artifact["scaler"]
+        self.feature_names = artifact["feature_names"]
+        self.contamination = artifact["contamination"]
+        print(f"[MLAnomalyDetector] Loaded model trained on {artifact['training_samples']} samples ({artifact['trained_date']})")
 
     def detect_trade_anomalies(self) -> List[FindingsObject]:
         """
@@ -78,18 +91,11 @@ class MLAnomalyDetector:
         feature_cols = ['exposure', 'exposure_ratio', 'pv_discrepancy']
         X = df[feature_cols].fillna(0).replace([np.inf, -np.inf], 0)
 
-        # Scale features
-        X_scaled = self.scaler.fit_transform(X)
+        # Scale features using the scaler fitted during training
+        X_scaled = self.scaler.transform(X)
 
-        # Train Isolation Forest (simplified parameters)
-        self.model = IsolationForest(
-            contamination=self.contamination,
-            random_state=42,
-            n_estimators=50  # Reduced from 100
-        )
-
-        # Predict anomalies
-        predictions = self.model.fit_predict(X_scaled)
+        # Predict using the pre-trained model (no retraining)
+        predictions = self.model.predict(X_scaled)
         scores = self.model.score_samples(X_scaled)
 
         # Normalize scores
@@ -162,7 +168,7 @@ class MLAnomalyDetector:
 
 if __name__ == "__main__":
     # Test the detector
-    detector = MLAnomalyDetector(contamination=0.15)
+    detector = MLAnomalyDetector()
     findings = detector.detect_all_anomalies()
 
     print(f"=== ML-Based Detection Results ===\n")

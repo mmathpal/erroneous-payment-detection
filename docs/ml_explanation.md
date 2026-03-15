@@ -21,9 +21,16 @@ The ML layer has two distinct components:
 
 | Component | File | Type | Purpose |
 |---|---|---|---|
-| Isolation Forest detector | `ml_engine/detector.py` | Trained ML model | Finds statistically unusual trades |
+| Training script | `train_ml_model.py` | Run once / periodically | Trains on full dataset, saves `.pkl` to `models/` |
+| Isolation Forest detector | `ml_engine/detector.py` | Loads pre-trained model | Loads `.pkl` from disk, runs inference only — no retraining |
 | Risk Scorer | `risk_scoring/scorer.py` | Weighted formula | Combines ML + rule findings into one 0-100 score |
-| Training script | `train_ml_model.py` | One-off script | Trains and saves the model to disk |
+
+**Important workflow:** You must run `train_ml_model.py` before the detector can be used. The detector will raise a `FileNotFoundError` if the `.pkl` file does not exist.
+
+```
+Step 1 (once):   poetry run python train_ml_model.py   → saves models/trade_anomaly_model.pkl
+Step 2 (anytime): poetry run python src/agents/ml_engine/detector.py  → loads .pkl, runs detection
+```
 
 The Rule Engine (`rule_engine/detector.py`) runs in parallel with the ML engine. Both produce `FindingsObject` results that feed into the Risk Scorer.
 
@@ -31,7 +38,7 @@ The Rule Engine (`rule_engine/detector.py`) runs in parallel with the ML engine.
 
 ## File 1: `ml_engine/detector.py`
 
-### Imports and Setup (lines 1–21)
+### Imports and Setup (lines 1–24)
 
 ```python
 #!/usr/bin/env python3
@@ -64,19 +71,16 @@ import numpy as np
 NumPy — used for array operations on scores (`.min()`, `.max()`) and replacing infinite values.
 
 ```python
-from sklearn.ensemble import IsolationForest
+import joblib
 ```
-The core ML algorithm. Imports scikit-learn's Isolation Forest class.
-
-```python
-from sklearn.preprocessing import StandardScaler
-```
-Feature normaliser. Ensures all features are on the same scale before feeding into the model.
+Used to load the pre-trained model from the `.pkl` file saved by `train_ml_model.py`. `joblib` is preferred over `pickle` for scikit-learn objects because it handles large numpy arrays more efficiently.
 
 ```python
 import pandas as pd
 ```
 Pandas — used to hold the database results in a DataFrame so feature engineering (column operations) is easy.
+
+> **Note:** `IsolationForest` and `StandardScaler` are no longer imported here. The detector does not train — it only loads. Those classes live entirely in `train_ml_model.py` now.
 
 ```python
 from src.agents.base import FindingsObject, ErrorType, SeverityLevel
@@ -88,9 +92,19 @@ from src.database.connection import DatabaseConnection
 ```
 The database wrapper that executes SQL queries against the EM (Exposure Manager) SQL Server database.
 
+```python
+from src.config.settings import settings
+```
+Imports the global settings object. Used here to resolve the model file path via `settings.models_dir`, so the path is consistent across the whole project and configurable from `.env`.
+
+```python
+MODEL_PATH = settings.models_dir / "trade_anomaly_model.pkl"
+```
+Module-level constant. Resolves to `<project_root>/models/trade_anomaly_model.pkl`. Defined at module level (not inside the class) so it is evaluated once on import rather than on every instantiation.
+
 ---
 
-### Class Definition and `__init__` (lines 24–38)
+### Class Definition and `__init__` (lines 27–51)
 
 ```python
 class MLAnomalyDetector:
@@ -98,14 +112,14 @@ class MLAnomalyDetector:
 Defines a class grouping all ML detection logic. One instance is created by the orchestrator per detection run.
 
 ```python
-def __init__(self, contamination: float = 0.15):
+def __init__(self):
 ```
-Constructor. `contamination=0.15` is the default — meaning "I expect about 15% of records to be anomalies." You can override this when creating the detector e.g. `MLAnomalyDetector(contamination=0.10)`.
+Constructor takes no arguments. All configuration (contamination, features, scaler) is loaded from the saved `.pkl` artifact — not passed in at runtime. This ensures the detector always uses exactly the same settings the model was trained with.
 
 ```python
     self.db = DatabaseConnection(database="EM")
 ```
-Opens a connection to the EM database. The `database="EM"` argument selects which database to connect to (configured in `.env`).
+Opens a connection to the EM database.
 
 ```python
     self.agent_name = "MLAnomalyDetector"
@@ -113,19 +127,43 @@ Opens a connection to the EM database. The `database="EM"` argument selects whic
 A string identifier stamped onto every `FindingsObject` this agent produces. The Risk Scorer uses this to distinguish ML findings from rule-based findings.
 
 ```python
-    self.contamination = contamination
+    if not MODEL_PATH.exists():
+        raise FileNotFoundError(
+            f"Model file not found at {MODEL_PATH}. "
+            "Please run: poetry run python train_ml_model.py"
+        )
 ```
-Stores the contamination parameter on the instance so `detect_trade_anomalies` can pass it to the model.
+Fails fast with a clear, actionable error message if the model hasn't been trained yet. Without this check, the failure would occur later inside `detect_trade_anomalies` with a cryptic `AttributeError`. The error message tells the user exactly what to do.
 
 ```python
-    self.model = None
+    artifact = joblib.load(MODEL_PATH)
 ```
-The Isolation Forest model starts as `None`. It is created and trained inside `detect_trade_anomalies`. There is no pre-loaded saved model — the model is retrained fresh on each run in this POC.
+Loads the entire saved dictionary from disk. `artifact` is a dict containing the model, scaler, and metadata (see `train_ml_model.py` for what is saved).
 
 ```python
-    self.scaler = StandardScaler()
+    self.model = artifact["model"]
 ```
-Creates a new StandardScaler instance. This will learn the mean and standard deviation of each feature from the data and use that to normalise them. It is also stored on the instance so the same scaler used for training can be used for prediction (important — if you scale with different parameters you get nonsense scores).
+The trained `IsolationForest` instance. All 100 decision trees are already built — no training happens here.
+
+```python
+    self.scaler = artifact["scaler"]
+```
+The `StandardScaler` that was fitted on the training data. **Critically important** — this must be the exact same scaler used during training. Using a different scaler (even one fitted on the same data with slightly different row order) would produce different normalised values and corrupt the predictions.
+
+```python
+    self.feature_names = artifact["feature_names"]
+```
+The list of feature column names e.g. `['exposure', 'exposure_ratio', 'pv_discrepancy']`. Stored so the detector always uses the same features the model was trained on.
+
+```python
+    self.contamination = artifact["contamination"]
+```
+The contamination value used during training. Stored as metadata — not used at inference time (the model's decision boundary is already baked in), but useful for logging and auditing.
+
+```python
+    print(f"[MLAnomalyDetector] Loaded model trained on {artifact['training_samples']} samples ({artifact['trained_date']})")
+```
+Prints a confirmation showing when the model was trained and how much data it saw. Useful during debugging to confirm you are not running a stale model.
 
 ---
 
@@ -210,49 +248,30 @@ The `if x['component_use_pv'] != 0 else 0` guard prevents division-by-zero for r
 
 ---
 
-### Scaling (line 82)
+### Scaling (line 95)
 
 ```python
-    X_scaled = self.scaler.fit_transform(X)
+    X_scaled = self.scaler.transform(X)
 ```
-`fit_transform` does two things in one call:
-1. **fit** — learns the mean and std of each column from `X`
-2. **transform** — subtracts the mean and divides by std, making every feature have mean=0 and std=1
+`transform` (not `fit_transform`) — applies the normalisation parameters that were learned during training. It does **not** re-learn from the current data. This is the key difference from the old approach:
 
-Why this matters: `exposure` values might be in the millions (e.g. 1,500,000) while `pv_discrepancy` values are between 0 and 1. Without scaling, the model would pay almost all its attention to `exposure` and ignore `pv_discrepancy`. Scaling puts them on equal footing.
+| Old (retrained each run) | New (pre-trained) |
+|---|---|
+| `scaler.fit_transform(X)` — learns mean/std from current 100 rows | `scaler.transform(X)` — uses mean/std learned from full training dataset |
 
-Example before/after:
-```
-Before: exposure=1500000,  exposure_ratio=5.0,  pv_discrepancy=0.25
-After:  exposure=2.31,     exposure_ratio=3.14, pv_discrepancy=1.87
-```
+Using `fit_transform` here would be wrong — the scaler would compute different statistics from just the `TOP 100` rows seen at inference time, which may not match the distribution the model was trained on, leading to inconsistent scores.
 
 ---
 
-### Model Training and Prediction (lines 85–93)
+### Prediction (lines 97–99)
 
 ```python
-    self.model = IsolationForest(
-        contamination=self.contamination,  # 0.15 = expect 15% anomalies
-        random_state=42,                   # Fixed seed for reproducibility
-        n_estimators=50                    # Build 50 decision trees
-    )
+    predictions = self.model.predict(X_scaled)
 ```
-Creates the Isolation Forest model. Not yet trained.
-
-`contamination=0.15` — sets the decision boundary so approximately 15% of samples will be labelled anomalies.
-`random_state=42` — any fixed integer makes results reproducible. Without this, results would vary each run.
-`n_estimators=50` — builds 50 trees. More trees = more stable results but slower. 100 is used in the training script; 50 is used here for inference speed.
-
-```python
-    predictions = self.model.fit_predict(X_scaled)
-```
-`fit_predict` trains the model on `X_scaled` and immediately predicts on the same data.
-Returns a numpy array of `+1` (normal) or `-1` (anomaly) for each row.
-Example: `[1, 1, -1, 1, -1, 1, ...]`
+`predict` (not `fit_predict`) — runs inference using the already-trained model. No trees are built. Returns `+1` (normal) or `-1` (anomaly) for each row based on the decision boundary established during training.
 
 **How Isolation Forest decides what is an anomaly:**
-It builds trees by randomly selecting a feature and randomly selecting a split value. Anomalies tend to be isolated (separated from others) in very few splits, because they sit far from the dense cluster of normal data. The algorithm counts splits needed to isolate each point — few splits = anomaly.
+During training it built 100 decision trees by randomly selecting a feature and a split value. For each data point it counted how many splits were needed to isolate it. Points requiring few splits are anomalies — they sit far from the dense cluster of normal data. At inference time it simply applies those same trees to the new data.
 
 ```python
     scores = self.model.score_samples(X_scaled)
@@ -380,7 +399,7 @@ The single public entry point the orchestrator calls. Aggregates results from al
 
 ---
 
-### `__main__` block (lines 163–175)
+### `__main__` block (lines 169–181)
 
 ```python
 if __name__ == "__main__":
@@ -388,7 +407,11 @@ if __name__ == "__main__":
 This block only runs when the file is executed directly (`python detector.py`), not when imported as a module. Used for quick manual testing.
 
 ```python
-    detector = MLAnomalyDetector(contamination=0.15)
+    detector = MLAnomalyDetector()
+```
+No arguments — all configuration comes from the loaded `.pkl`. This will raise `FileNotFoundError` if you haven't run `train_ml_model.py` first.
+
+```python
     findings = detector.detect_all_anomalies()
     print(f"Total anomalies found: {len(findings)}\n")
     for finding in findings:
@@ -396,7 +419,7 @@ This block only runs when the file is executed directly (`python detector.py`), 
         print(f"  {finding.description}")
         print(f"  Confidence: {finding.confidence_score:.2f}")
 ```
-Creates the detector, runs it, and prints a summary of each finding. `.value` on an Enum returns the string (e.g. `SeverityLevel.HIGH.value` → `"high"`). `.upper()` capitalises it for display.
+Runs detection and prints a summary of each finding. `.value` on an Enum returns the string (e.g. `SeverityLevel.HIGH.value` → `"high"`). `.upper()` capitalises it for display.
 
 ---
 
@@ -625,17 +648,36 @@ This appears in *mitigating* factors — if only the ML flagged it and no rule m
 
 ## File 3: `train_ml_model.py`
 
-This script is run once (or periodically) to train a model and save it to disk. The main `detector.py` retrains on every run, but this script trains a more robust version (100 estimators vs 50) that can be loaded without retraining.
+This is the **only place** where training happens. Run it once before first use, then re-run whenever you want to refresh the model on newer data. The detector never trains — it only loads what this script produces.
 
-### `train_trade_anomaly_model` (lines 28–137)
+### Imports
+
+```python
+from src.config.settings import settings
+```
+Now imports `settings` so the save path (`settings.models_dir`) is consistent with the detector's load path. Previously this script used a hardcoded `Path("models")` which could silently save to the wrong place depending on where you ran it from.
+
+---
+
+### `train_trade_anomaly_model` (lines 29–137)
 
 ```python
 def train_trade_anomaly_model(contamination: float = 0.15):
 ```
-Standalone training function. Uses same logic as the detector but:
-1. Fetches all records (no `TOP 100` limit)
-2. Uses `n_estimators=100` (more stable)
-3. Saves the model to disk with `joblib`
+Standalone training function. Key differences from the old in-detector training:
+1. Fetches **all** records (no `TOP 100` limit) — trains on the full dataset for better generalisation
+2. Uses `n_estimators=100` — double the trees for a more stable model
+3. Saves model + scaler to disk so the detector can load them
+
+```python
+    query = """
+        SELECT
+            src_trade_ref, exposure, notional_1, component_use_pv, used_pv
+        FROM trade
+        WHERE exposure IS NOT NULL AND notional_1 IS NOT NULL AND notional_1 != 0
+    """
+```
+No `TOP 100` here — fetches everything. The detector uses `TOP 100` at inference for speed, but the training data should be as large as possible.
 
 ```python
     df['exposure_ratio'] = df['exposure'] / df['notional_1']
@@ -643,23 +685,29 @@ Standalone training function. Uses same logic as the detector but:
     feature_cols = ['exposure', 'exposure_ratio', 'pv_discrepancy']
     X = df[feature_cols].fillna(0).replace([np.inf, -np.inf], 0)
 ```
-Identical feature engineering to `detector.py`. Must match exactly — if you change features here, you must change them in the detector too or the saved model will be useless.
+Identical feature engineering to `detector.py`. **This must stay in sync.** If you add a feature here, add it in the detector too, or the scaler will receive unexpected columns and crash.
 
 ```python
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 ```
-Fits a new scaler on all the training data (not just TOP 100).
+`fit_transform` here — correct. During training we **want** to learn the mean and std from the data. This fitted scaler is saved to the artifact and loaded by the detector, which uses only `transform` (not `fit_transform`).
 
 ```python
     model = IsolationForest(
         contamination=contamination,
         random_state=42,
-        n_estimators=100    # Double the estimators used at inference time
+        n_estimators=100
     )
     model.fit(X_scaled)
 ```
-Trains on the full dataset. Note `fit()` not `fit_predict()` — we don't need predictions here, just a trained model.
+`fit()` not `fit_predict()` — we only need a trained model, not predictions on the training data.
+
+```python
+def main():
+    train_trade_anomaly_model(contamination=settings.isolation_forest_contamination)
+```
+Now reads contamination from `settings.isolation_forest_contamination` (default `0.1` in `settings.py`, overridable via `.env`). Previously hardcoded to `0.15`. This means you can change contamination in one place (`.env` or `settings.py`) and it applies to both training and inference.
 
 ```python
     model_artifact = {
@@ -672,21 +720,69 @@ Trains on the full dataset. Note `fit()` not `fit_predict()` — we don't need p
         'training_samples': len(df),
         'detected_anomalies': int(anomaly_count)
     }
+    model_path = settings.models_dir / "trade_anomaly_model.pkl"
     joblib.dump(model_artifact, model_path)
 ```
-Saves everything needed to reproduce the model's predictions: the model itself, the scaler (must use same scaler at inference), metadata for auditability. `joblib` is preferred over `pickle` for scikit-learn models as it handles numpy arrays more efficiently.
+Saves to `settings.models_dir / "trade_anomaly_model.pkl"` — the same path the detector loads from. The artifact bundles everything the detector needs:
+
+| Key | What it is | Why it's needed |
+|---|---|---|
+| `model` | Trained `IsolationForest` | The decision trees for prediction |
+| `scaler` | Fitted `StandardScaler` | Must match what was used during training |
+| `feature_names` | `['exposure', 'exposure_ratio', 'pv_discrepancy']` | Documents which columns the model expects |
+| `contamination` | e.g. `0.1` | Metadata — baked into the model already |
+| `trained_date` | ISO timestamp | Audit trail — shown on detector startup |
+| `training_samples` | e.g. `847` | Shown on detector startup |
+| `detected_anomalies` | e.g. `127` | Sanity check — ~contamination% of training samples |
 
 ---
 
 ## End-to-End Flow Diagram
 
 ```
-Database (SQL Server)
+── TRAINING (run once) ──────────────────────────────────────────
+
+  Database (all rows)
+        │
+        ▼
+  train_ml_model.py
+  ├── feature engineering
+  ├── StandardScaler.fit_transform()   ← learns mean/std
+  ├── IsolationForest.fit()            ← builds 100 trees
+  └── joblib.dump(artifact)            → models/trade_anomaly_model.pkl
+
+── DETECTION (every run) ────────────────────────────────────────
+
+  models/trade_anomaly_model.pkl
+        │
+        ▼ joblib.load()
+  MLAnomalyDetector.__init__()
+  ├── self.model   = artifact["model"]
+  ├── self.scaler  = artifact["scaler"]   ← same scaler as training
+  └── self.feature_names = artifact["feature_names"]
+
+  Database (TOP 100 rows)
+        │
+        ▼
+  feature engineering
+        │
+        ▼
+  scaler.transform()    ← applies saved mean/std (NO refit)
+        │
+        ▼
+  model.predict()       ← uses pre-built trees (NO retraining)
+  model.score_samples() ← raw anomaly scores
+        │
+        ▼ normalise + filter
+  List[FindingsObject]
+        │
+        │
+Database (all rows, 3 SQL rules)
         │
         ▼
 ┌───────────────────┐     ┌──────────────────────┐
 │  RuleBasedDetector│     │  MLAnomalyDetector   │
-│  (3 SQL rules)    │     │  (Isolation Forest)  │
+│  (3 SQL rules)    │     │  (loads from .pkl)   │
 │  confidence=1.0   │     │  confidence=0.5-1.0  │
 └────────┬──────────┘     └──────────┬───────────┘
          │                           │
@@ -740,6 +836,13 @@ Without scaling:
 - `pv_discrepancy` values: 0.0 to 1.0
 
 The model would treat a 1-unit difference in exposure as far more significant than a 1-unit difference in pv_discrepancy, even though 1.0 is the maximum possible pv_discrepancy. Scaling brings both to the same range so the model can assess them fairly.
+
+**Why `fit_transform` in training but `transform` in the detector?**
+
+- `fit_transform` = learn the mean/std **then** apply them. Used once in `train_ml_model.py` on the full dataset.
+- `transform` = apply already-learned mean/std. Used in `detector.py` at inference time.
+
+If the detector called `fit_transform`, it would re-learn statistics from just the `TOP 100` rows it fetches, which may have a different distribution from the training data. This would silently corrupt the scores. The saved scaler ensures the same transformation is applied consistently every time.
 
 ### Why `contamination=0.15`?
 
