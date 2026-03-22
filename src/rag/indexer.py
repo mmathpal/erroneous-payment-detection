@@ -3,16 +3,64 @@
 RAG Indexer using ChromaDB
 
 Uses ChromaDB for vector storage and semantic search.
-Embeddings handled internally by ChromaDB (all-MiniLM-L6-v2).
+Embeddings generated with transformers (all-MiniLM-L6-v2) via mean pooling.
 Persists to local files in data/chroma/.
 """
 
 import chromadb
-from chromadb.utils import embedding_functions
+import torch
+from transformers import AutoTokenizer, AutoModel
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Optional
 from pathlib import Path
+
+
+class TransformersEmbeddingFunction:
+    """
+    ChromaDB-compatible embedding function using transformers directly.
+    Applies mean pooling over token embeddings (same as sentence-transformers).
+    """
+
+    def __init__(self, model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> None:
+        self._tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self._model = AutoModel.from_pretrained(model_name)
+        self._model.eval()
+
+    def name(self) -> str:
+        """
+        Return "default" so ChromaDB skips the persisted-EF conflict check.
+        This allows swapping embedding implementations without deleting the collection.
+        """
+        return "default"
+
+    def _encode(self, texts: list[str]) -> list[list[float]]:
+        """Shared encoding logic for both documents and queries."""
+        encoded = self._tokenizer(
+            texts,
+            padding=True,
+            truncation=True,
+            max_length=512,
+            return_tensors="pt",
+        )
+        with torch.no_grad():
+            output = self._model(**encoded)
+
+        # Mean pool over token dimension, respecting attention mask
+        mask = encoded["attention_mask"].unsqueeze(-1).float()
+        embeddings = (output.last_hidden_state * mask).sum(dim=1) / mask.sum(dim=1)
+
+        # L2-normalise so cosine similarity == dot product
+        embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=1)
+        return embeddings.tolist()
+
+    def __call__(self, input: list[str]) -> list[list[float]]:
+        """Embed documents. Called by ChromaDB on upsert."""
+        return self._encode(input)
+
+    def embed_query(self, input: list[str]) -> list[list[float]]:
+        """Embed query texts. Called by ChromaDB on query."""
+        return self._encode(input)
 
 
 @dataclass
@@ -67,7 +115,7 @@ class RAGIndexer:
     RAG system backed by ChromaDB with local file persistence.
 
     Files stored in persist_dir (default: data/chroma/).
-    Uses all-MiniLM-L6-v2 embeddings via sentence-transformers.
+    Uses all-MiniLM-L6-v2 embeddings via transformers with mean pooling.
     """
 
     COLLECTION_NAME = "incidents"
@@ -76,9 +124,7 @@ class RAGIndexer:
         Path(persist_dir).mkdir(parents=True, exist_ok=True)
 
         self._client = chromadb.PersistentClient(path=persist_dir)
-        self._ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="all-MiniLM-L6-v2"
-        )
+        self._ef = TransformersEmbeddingFunction()
         self._collection = self._client.get_or_create_collection(
             name=self.COLLECTION_NAME,
             embedding_function=self._ef,
