@@ -1,329 +1,485 @@
 <mxfile host="app.diagrams.net" modified="2026-03-15T00:00:00.000Z" agent="Claude Code" version="21.0.0" type="device">
-  <diagram name="EM Architecture" id="em-architecture">
-    <mxGraphModel dx="1422" dy="762" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="1">
+  <diagram name="EM Architecture" id="em-architecture-v2">
+    <mxGraphModel dx="1654" dy="1169" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1169" math="0" shadow="1">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- ========== TITLE ========== -->
-        <mxCell id="title" value="Exposure Manager — Erroneous Payment Detection System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
-          <mxGeometry x="227" y="20" width="1200" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="subtitle" value="Multi-Agent AI Architecture with MCP Servers | POC → Production Roadmap" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=2;fontColor=#555555;" vertex="1" parent="1">
-          <mxGeometry x="227" y="58" width="1200" height="24" as="geometry" />
+        <!-- ========== BACKGROUND ========== -->
+        <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1800" height="1169" as="geometry" />
         </mxCell>
 
-        <!-- ========== LEGEND ========== -->
-        <mxCell id="legend_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="40" y="80" width="160" height="130" as="geometry" />
+        <!-- ========== TITLE BANNER ========== -->
+        <mxCell id="title_banner" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="20" y="14" width="1760" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="legend_title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
-          <mxGeometry x="55" y="88" width="100" height="20" as="geometry" />
+        <mxCell id="title_text" value="&lt;font style=&quot;font-size:22px;font-weight:bold;&quot; color=&quot;#FFFFFF&quot;&gt;Exposure Manager — Erroneous Payment Detection&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="20" y="17" width="1760" height="36" as="geometry" />
         </mxCell>
-        <mxCell id="leg1" value="" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="55" y="113" width="20" height="14" as="geometry" />
-        </mxCell>
-        <mxCell id="leg1t" value="Implemented (POC)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#333;" vertex="1" parent="1">
-          <mxGeometry x="82" y="111" width="110" height="18" as="geometry" />
-        </mxCell>
-        <mxCell id="leg2" value="" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="55" y="133" width="20" height="14" as="geometry" />
-        </mxCell>
-        <mxCell id="leg2t" value="MCP Server" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#333;" vertex="1" parent="1">
-          <mxGeometry x="82" y="131" width="110" height="18" as="geometry" />
-        </mxCell>
-        <mxCell id="leg3" value="" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
-          <mxGeometry x="55" y="153" width="20" height="14" as="geometry" />
-        </mxCell>
-        <mxCell id="leg3t" value="External System" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#333;" vertex="1" parent="1">
-          <mxGeometry x="82" y="151" width="110" height="18" as="geometry" />
-        </mxCell>
-        <mxCell id="leg4" value="" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="55" y="173" width="20" height="14" as="geometry" />
-        </mxCell>
-        <mxCell id="leg4t" value="Roadmap (Future)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#333;" vertex="1" parent="1">
-          <mxGeometry x="82" y="171" width="110" height="18" as="geometry" />
+        <mxCell id="subtitle_text" value="&lt;font style=&quot;font-size:13px;font-style:italic;&quot; color=&quot;#B0BEC5&quot;&gt;AI-Powered Multi-Agent Architecture&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;MCP Servers&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;ML + Rules + RAG&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;POC Architecture · LangGraph upgrade path shown&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="20" y="51" width="1760" height="28" as="geometry" />
         </mxCell>
 
-        <!-- ========== ROW 1: DATA SOURCES ========== -->
-        <mxCell id="row1_label" value="DATA SOURCES" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="40" y="230" width="160" height="20" as="geometry" />
+        <!-- ========== LEGEND — COLOUR ========== -->
+        <mxCell id="leg_bg" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CFD8DC;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="26" y="98" width="198" height="196" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_title" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#1a1a2e&quot;&gt;Colour Legend&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="103" width="178" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_ds" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFFFFF&quot;&gt;  Data Sources&lt;/font&gt;" style="rounded=1;arcSize=20;fillColor=#455A64;strokeColor=none;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="36" y="126" width="178" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_mcp" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFFFFF&quot;&gt;  MCP Servers&lt;/font&gt;" style="rounded=1;arcSize=20;fillColor=#00897B;strokeColor=none;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="36" y="152" width="178" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_built" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFFFFF&quot;&gt;  Agent — Built ✅&lt;/font&gt;" style="rounded=1;arcSize=20;fillColor=#0066CC;strokeColor=none;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="36" y="178" width="178" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_road" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFFFFF&quot;&gt;  Agent — Roadmap 🔲&lt;/font&gt;" style="rounded=1;arcSize=20;fillColor=#FF8C00;strokeColor=none;fontStyle=1;html=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="36" y="204" width="178" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_orch" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFFFFF&quot;&gt;  Orchestrator&lt;/font&gt;" style="rounded=1;arcSize=20;fillColor=#5E35B1;strokeColor=none;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="36" y="230" width="178" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_leg_langgraph" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#E65100&quot;&gt;  LangGraph (Production upgrade path)&lt;/font&gt;" style="rounded=1;arcSize=20;fillColor=#FFF8E1;strokeColor=#FF8F00;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="36" y="256" width="178" height="22" as="geometry" />
         </mxCell>
 
-        <!-- SQL Server DB -->
-        <mxCell id="sqlserver" value="&lt;b&gt;SQL Server&lt;/b&gt;&lt;br&gt;EM Database&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;trade · ci_collateral_movement&lt;br&gt;arrangement_clearing_dra&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="240" y="215" width="150" height="80" as="geometry" />
+        <!-- ========== LEGEND — POC STATUS ========== -->
+        <mxCell id="poc_bg" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CFD8DC;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="26" y="302" width="198" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="poc_title" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#1a1a2e&quot;&gt;POC Build Status&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="307" width="178" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="poc_built" value="&lt;font style=&quot;font-size:10px;&quot;&gt;✅  Built &amp; functional in POC&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="330" width="178" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="poc_road" value="&lt;font style=&quot;font-size:10px;&quot;&gt;🔲  On roadmap (not yet built)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="350" width="178" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="poc_train" value="&lt;font style=&quot;font-size:10px;&quot;&gt;⚙️  Offline training pipeline&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="370" width="178" height="18" as="geometry" />
         </mxCell>
 
-        <!-- EM App Logs -->
-        <mxCell id="logs" value="&lt;b&gt;EM Application Logs&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;EOD boundary · timeouts&lt;br&gt;zero margin · errors&lt;/font&gt;" style="shape=mxgraph.cisco.storage.storage;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;pointerEvents=1;" vertex="1" parent="1">
-          <mxGeometry x="430" y="215" width="150" height="80" as="geometry" />
+        <!-- ========== STEP CALLOUT CIRCLES ========== -->
+        <!-- Step 1 -->
+        <mxCell id="step1_circle" value="&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#FFFFFF&quot;&gt;①&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#455A64;strokeColor=#263238;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="245" y="110" width="40" height="40" as="geometry" />
+        </mxCell>
+        <!-- Step 2 -->
+        <mxCell id="step2_circle" value="&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#FFFFFF&quot;&gt;②&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="245" y="305" width="40" height="40" as="geometry" />
+        </mxCell>
+        <!-- Step 3 -->
+        <mxCell id="step3_circle" value="&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#FFFFFF&quot;&gt;③&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="245" y="510" width="40" height="40" as="geometry" />
+        </mxCell>
+        <!-- Step 4 -->
+        <mxCell id="step4_circle" value="&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#FFFFFF&quot;&gt;④&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#311B92;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="245" y="718" width="40" height="40" as="geometry" />
+        </mxCell>
+        <!-- Step 5 -->
+        <mxCell id="step5_circle" value="&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#FFFFFF&quot;&gt;⑤&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="245" y="850" width="40" height="40" as="geometry" />
+        </mxCell>
+        <!-- Step 6 -->
+        <mxCell id="step6_circle" value="&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#FFFFFF&quot;&gt;⑥&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=#1B5E20;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="245" y="990" width="40" height="40" as="geometry" />
         </mxCell>
 
-        <!-- Kafka -->
-        <mxCell id="kafka" value="&lt;b&gt;Kafka Topics&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;Margin Gen responses&lt;br&gt;MARK sync messages&lt;/font&gt;" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.kinesis;labelBackgroundColor=#ffffff;sketch=0;fontStyle=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="620" y="215" width="150" height="80" as="geometry" />
+        <!-- ========== LAYER 1 — DATA SOURCES ========== -->
+        <!-- Section Label -->
+        <mxCell id="l1_label" value="&lt;b&gt;&lt;font style=&quot;font-size:13px;&quot; color=&quot;#FFFFFF&quot;&gt;① DATA SOURCES&lt;/font&gt;&lt;/b&gt;" style="rounded=1;arcSize=50;fillColor=#455A64;strokeColor=#263238;html=1;" vertex="1" parent="1">
+          <mxGeometry x="296" y="98" width="200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="l1_sub" value="&lt;font style=&quot;font-size:10px;font-style:italic;&quot; color=&quot;#607D8B&quot;&gt;System monitors SQL Server, Logs, Kafka &amp; Email in real time&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="510" y="106" width="560" height="20" as="geometry" />
         </mxCell>
 
-        <!-- Exchange / Email -->
-        <mxCell id="exchange" value="&lt;b&gt;MS Exchange&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;Incident emails&lt;br&gt;Resolution threads&lt;/font&gt;" style="shape=mxgraph.office.email.email;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="810" y="215" width="150" height="80" as="geometry" />
+        <!-- DS1: SQL Server / EM Database -->
+        <mxCell id="ds_sql" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;SQL Server / EM Database&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#CFD8DC&quot;&gt;• Trades &amp; Collateral Movements&lt;br/&gt;• DRA Calculations&lt;br/&gt;• Booking History&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#455A64;strokeColor=#263238;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="296" y="144" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- ChromaDB -->
-        <mxCell id="chromadb" value="&lt;b&gt;ChromaDB&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;Historical incidents&lt;br&gt;Vector embeddings&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="215" width="150" height="80" as="geometry" />
+        <!-- DS2: EM App Logs -->
+        <mxCell id="ds_logs" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;EM Application Logs&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#CFD8DC&quot;&gt;• Errors &amp; Timeouts&lt;br/&gt;• EOD Boundary Events&lt;br/&gt;• Booking Exceptions&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#455A64;strokeColor=#263238;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="510" y="144" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- ML Model Store -->
-        <mxCell id="mlstore" value="&lt;b&gt;ML Model Store&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;trade_anomaly_model.pkl&lt;br&gt;Isolation Forest&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="215" width="150" height="80" as="geometry" />
+        <!-- DS3: Kafka Topics -->
+        <mxCell id="ds_kafka" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;Kafka Topics&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#CFD8DC&quot;&gt;• Margin Gen Responses&lt;br/&gt;• MARK Sync Messages&lt;br/&gt;• Message Lag Metrics&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#455A64;strokeColor=#263238;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="724" y="144" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- ========== ROW 2: MCP SERVERS ========== -->
-        <mxCell id="row2_label" value="MCP SERVERS  (FastMCP — structured JSON tools)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="40" y="340" width="400" height="20" as="geometry" />
+        <!-- DS4: MS Exchange -->
+        <mxCell id="ds_email" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;MS Exchange / Email&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#CFD8DC&quot;&gt;• Incident Threads&lt;br/&gt;• Resolution History&lt;br/&gt;• via MS Graph API&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#455A64;strokeColor=#263238;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="938" y="144" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- MCP SQL -->
-        <mxCell id="mcp_sql" value="&lt;b&gt;SQL Tool&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;query_trade()&lt;br&gt;query_collateral()&lt;br&gt;query_dra()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="240" y="360" width="150" height="80" as="geometry" />
+        <!-- DS5: ChromaDB -->
+        <mxCell id="ds_chroma" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;ChromaDB&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#CFD8DC&quot;&gt;• Historical Incidents&lt;br/&gt;• Semantic Embeddings&lt;br/&gt;• RAG Vector Store&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#455A64;strokeColor=#263238;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1152" y="144" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- MCP Log -->
-        <mxCell id="mcp_log" value="&lt;b&gt;Log Parser Tool&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;read_log_file()&lt;br&gt;search_by_keyword()&lt;br&gt;get_errors_for_client()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="430" y="360" width="150" height="80" as="geometry" />
+        <!-- DS6: ML Model Store -->
+        <mxCell id="ds_ml" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;ML Model Store&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#CFD8DC&quot;&gt;• trade_anomaly_model.pkl&lt;br/&gt;• Isolation Forest&lt;br/&gt;• Pre-trained Offline&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#455A64;strokeColor=#263238;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1366" y="144" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- MCP Kafka -->
-        <mxCell id="mcp_kafka" value="&lt;b&gt;Kafka Tool&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;consume_topic()&lt;br&gt;get_margin_response()&lt;br&gt;check_mark_sync()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="620" y="360" width="150" height="80" as="geometry" />
-        </mxCell>
-
-        <!-- MCP Email -->
-        <mxCell id="mcp_email" value="&lt;b&gt;Email Tool&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;search_mailbox()&lt;br&gt;get_incident_thread()&lt;br&gt;MS Graph API&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="810" y="360" width="150" height="80" as="geometry" />
-        </mxCell>
-
-        <!-- MCP RAG -->
-        <mxCell id="mcp_rag" value="&lt;b&gt;RAG Read Tool&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;semantic_search()&lt;br&gt;get_similar_incidents()&lt;br&gt;get_resolution_steps()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="360" width="150" height="80" as="geometry" />
-        </mxCell>
-
-        <!-- MCP ML -->
-        <mxCell id="mcp_ml" value="&lt;b&gt;ML Scoring Tool&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;run_isolation_forest()&lt;br&gt;get_anomaly_score()&lt;br&gt;compute_zscore()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="360" width="150" height="80" as="geometry" />
-        </mxCell>
-
-        <!-- ========== ROW 3: SPECIALIST AGENTS ========== -->
-        <mxCell id="row3_label" value="SPECIALIST AGENTS  (each returns FindingsObject)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="40" y="490" width="400" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Database Agent -->
-        <mxCell id="agent_db" value="&lt;b&gt;Database Agent&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;✅ Implemented&lt;br&gt;Split booking detection&lt;br&gt;DRA duplicate check&lt;br&gt;PV discrepancy rule&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="240" y="510" width="150" height="90" as="geometry" />
-        </mxCell>
-
-        <!-- Log Agent -->
-        <mxCell id="agent_log" value="&lt;b&gt;Log Agent&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;🔲 Roadmap&lt;br&gt;EOD boundary crossing&lt;br&gt;Margin Gen timeout&lt;br&gt;Zero margin events&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="430" y="510" width="150" height="90" as="geometry" />
-        </mxCell>
-
-        <!-- Kafka Agent -->
-        <mxCell id="agent_kafka" value="&lt;b&gt;Kafka Agent&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;🔲 Roadmap&lt;br&gt;Margin Gen anomalies&lt;br&gt;MARK sync issues&lt;br&gt;Message lag detection&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="620" y="510" width="150" height="90" as="geometry" />
-        </mxCell>
-
-        <!-- Email Agent -->
-        <mxCell id="agent_email" value="&lt;b&gt;Email Agent&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;🔲 Roadmap&lt;br&gt;Exchange search&lt;br&gt;Incident correlation&lt;br&gt;Resolution history&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="810" y="510" width="150" height="90" as="geometry" />
-        </mxCell>
-
-        <!-- Resolution Agent -->
-        <mxCell id="agent_res" value="&lt;b&gt;Resolution Agent&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;✅ Implemented&lt;br&gt;RAG retrieval&lt;br&gt;Similar incidents&lt;br&gt;Recommended steps&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="510" width="150" height="90" as="geometry" />
-        </mxCell>
-
-        <!-- ML Agent -->
-        <mxCell id="agent_ml" value="&lt;b&gt;ML Agent&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;✅ Implemented&lt;br&gt;Isolation Forest&lt;br&gt;Anomaly scoring&lt;br&gt;PV discrepancy&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="510" width="150" height="90" as="geometry" />
-        </mxCell>
-
-        <!-- ========== ROW 4: ORCHESTRATOR ========== -->
-        <mxCell id="row4_label" value="ORCHESTRATION LAYER" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="40" y="650" width="300" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Orchestrator box -->
-        <mxCell id="orchestrator_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="240" y="668" width="1100" height="110" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_title" value="&lt;b&gt;Orchestrator Agent&lt;/b&gt;  ✅ Implemented" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=13;fontColor=#4d1f7c;" vertex="1" parent="1">
-          <mxGeometry x="255" y="672" width="400" height="22" as="geometry" />
-        </mxCell>
-
-        <!-- Orchestrator internal components -->
-        <mxCell id="orch_rule" value="Rule Engine&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;3 SQL rules&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="258" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_ml" value="ML Engine&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;Loads .pkl&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="380" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_llm" value="LLM Analyzer&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;GPT-4o-mini&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="502" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_rag" value="Resolution Agent&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;RAG + LLM&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="624" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_risk" value="Risk Scorer&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;0–100 score&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="746" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_log_a" value="Log Agent&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;🔲 Roadmap&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="868" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_kafka_a" value="Kafka Agent&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;🔲 Roadmap&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="990" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_email_a" value="Email Agent&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;🔲 Roadmap&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1112" y="698" width="110" height="50" as="geometry" />
-        </mxCell>
-
-        <mxCell id="orch_arrow1" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;strokeWidth=2;" edge="1" parent="1" source="orch_rule" target="orch_risk">
+        <!-- ========== DOWN ARROWS DS → MCP ========== -->
+        <mxCell id="arr_ds1_mcp" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#00897B&quot;&gt;SQL&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#00897B;strokeWidth=2;endArrow=block;endFill=1;fontColor=#00897B;" edge="1" source="ds_sql" target="mcp_sql" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="orch_arrow2" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;strokeWidth=2;" edge="1" parent="1" source="orch_ml" target="orch_risk">
+        <mxCell id="arr_ds2_mcp" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#00897B&quot;&gt;Files&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#00897B;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="ds_logs" target="mcp_log" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="orch_arrow3" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;strokeWidth=2;" edge="1" parent="1" source="orch_rag" target="orch_risk">
+        <mxCell id="arr_ds3_mcp" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#00897B&quot;&gt;Stream&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#00897B;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="ds_kafka" target="mcp_kafka" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_ds4_mcp" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#00897B&quot;&gt;Graph API&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#00897B;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="ds_email" target="mcp_email" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_ds5_mcp" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#00897B&quot;&gt;Embed&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#00897B;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="ds_chroma" target="mcp_rag" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_ds6_mcp" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#00897B&quot;&gt;.pkl&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#00897B;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="ds_ml" target="mcp_ml" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- ========== ROW 5: OUTPUT LAYER ========== -->
-        <mxCell id="row5_label" value="OUTPUT &amp; UI LAYER" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="40" y="825" width="300" height="20" as="geometry" />
+        <!-- ========== LAYER 2 — MCP SERVERS ========== -->
+        <mxCell id="l2_label" value="&lt;b&gt;&lt;font style=&quot;font-size:13px;&quot; color=&quot;#FFFFFF&quot;&gt;② MCP SERVERS&lt;/font&gt;&lt;/b&gt;" style="rounded=1;arcSize=50;fillColor=#00897B;strokeColor=#004D40;html=1;" vertex="1" parent="1">
+          <mxGeometry x="296" y="294" width="200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_sub" value="&lt;font style=&quot;font-size:10px;font-style:italic;&quot; color=&quot;#607D8B&quot;&gt;MCP Servers provide standardised JSON tool interface to each data source&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="510" y="302" width="560" height="20" as="geometry" />
         </mxCell>
 
-        <!-- Alert Object -->
-        <mxCell id="alert_obj" value="&lt;b&gt;Alert Object&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;alert_id · client_id&lt;br&gt;risk_score (0–100)&lt;br&gt;risk_level · findings&lt;br&gt;resolution_recommendation&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="380" y="845" width="160" height="90" as="geometry" />
+        <!-- MCP1: SQL Tool -->
+        <mxCell id="mcp_sql" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;SQL Tool&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#B2DFDB&quot;&gt;• query_trade()&lt;br/&gt;• query_collateral()&lt;br/&gt;• query_dra()&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="296" y="338" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- FastAPI -->
-        <mxCell id="fastapi" value="&lt;b&gt;FastAPI Backend&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;POST /run-detection&lt;br&gt;GET /alerts&lt;br&gt;PATCH /alerts/{id}&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="600" y="845" width="160" height="90" as="geometry" />
+        <!-- MCP2: Log Parser Tool -->
+        <mxCell id="mcp_log" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;Log Parser Tool&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#B2DFDB&quot;&gt;• read_log_file()&lt;br/&gt;• search_by_keyword()&lt;br/&gt;• get_errors_for_client()&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="510" y="338" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- Streamlit -->
-        <mxCell id="streamlit" value="&lt;b&gt;Streamlit Dashboard&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;✅ Implemented&lt;br&gt;Alert cards (RAG/AMBER/GREEN)&lt;br&gt;Evidence panels&lt;br&gt;Mark Reviewed · Raise Case&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="820" y="845" width="160" height="90" as="geometry" />
+        <!-- MCP3: Kafka Tool -->
+        <mxCell id="mcp_kafka" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;Kafka Tool&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#B2DFDB&quot;&gt;• consume_topic()&lt;br/&gt;• get_margin_response()&lt;br/&gt;• check_mark_sync()&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="724" y="338" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- MLflow -->
-        <mxCell id="mlflow" value="&lt;b&gt;MLflow&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;🔲 Roadmap&lt;br&gt;Model tracking&lt;br&gt;Experiment registry&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="845" width="160" height="90" as="geometry" />
+        <!-- MCP4: Email Tool -->
+        <mxCell id="mcp_email" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;Email Tool&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#B2DFDB&quot;&gt;• search_mailbox()&lt;br/&gt;• get_incident_thread()&lt;br/&gt;• MS Graph API&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="938" y="338" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- Training -->
-        <mxCell id="training" value="&lt;b&gt;ML Training Script&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;✅ Implemented&lt;br&gt;train_ml_model.py&lt;br&gt;IsolationForest · joblib&lt;br&gt;Saves .pkl artifact&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1260" y="845" width="160" height="90" as="geometry" />
+        <!-- MCP5: RAG Read Tool -->
+        <mxCell id="mcp_rag" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;RAG Read Tool&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#B2DFDB&quot;&gt;• semantic_search()&lt;br/&gt;• get_similar_incidents()&lt;br/&gt;• get_resolution_steps()&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1152" y="338" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- ========== VERTICAL CONNECTOR LINES (Data Sources → MCP) ========== -->
-        <mxCell id="e_sql_mcp" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" parent="1" source="sqlserver" target="mcp_sql">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_log_mcp" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" parent="1" source="logs" target="mcp_log">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_kaf_mcp" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" parent="1" source="kafka" target="mcp_kafka">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_exc_mcp" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" parent="1" source="exchange" target="mcp_email">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_chroma_mcp" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" parent="1" source="chromadb" target="mcp_rag">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_ml_mcp" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" parent="1" source="mlstore" target="mcp_ml">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- MCP6: ML Scoring Tool -->
+        <mxCell id="mcp_ml" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;ML Scoring Tool&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#B2DFDB&quot;&gt;• run_isolation_forest()&lt;br/&gt;• get_anomaly_score()&lt;br/&gt;• compute_zscore()&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1366" y="338" width="190" height="90" as="geometry" />
         </mxCell>
 
-        <!-- ========== MCP → AGENTS ========== -->
-        <mxCell id="e_mcp_db" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=1.5;" edge="1" parent="1" source="mcp_sql" target="agent_db">
+        <!-- ========== DOWN ARROWS MCP → AGENTS ========== -->
+        <mxCell id="arr_mcp1_ag" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#0066CC&quot;&gt;MCP call&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#0066CC;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="mcp_sql" target="ag_db" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mcp_log" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=1.5;" edge="1" parent="1" source="mcp_log" target="agent_log">
+        <mxCell id="arr_mcp2_ag" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#FF8C00&quot;&gt;MCP call&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#FF8C00;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="mcp_log" target="ag_log" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mcp_kafka" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=1.5;" edge="1" parent="1" source="mcp_kafka" target="agent_kafka">
+        <mxCell id="arr_mcp3_ag" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#FF8C00&quot;&gt;MCP call&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#FF8C00;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="mcp_kafka" target="ag_kafka" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mcp_email" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=1.5;" edge="1" parent="1" source="mcp_email" target="agent_email">
+        <mxCell id="arr_mcp4_ag" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#FF8C00&quot;&gt;MCP call&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#FF8C00;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="mcp_email" target="ag_email" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mcp_rag" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=1.5;" edge="1" parent="1" source="mcp_rag" target="agent_res">
+        <mxCell id="arr_mcp5_ag" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#0066CC&quot;&gt;MCP call&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#0066CC;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="mcp_rag" target="ag_res" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mcp_ml" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;strokeWidth=1.5;" edge="1" parent="1" source="mcp_ml" target="agent_ml">
+        <mxCell id="arr_mcp6_ag" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#0066CC&quot;&gt;MCP call&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#0066CC;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="mcp_ml" target="ag_ml" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- ========== AGENTS → ORCHESTRATOR ========== -->
-        <mxCell id="e_db_orch" value="FindingsObject" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=2;fontSize=9;" edge="1" parent="1" source="agent_db" target="orchestrator_bg">
+        <!-- ========== LAYER 3 — SPECIALIST AGENTS ========== -->
+        <mxCell id="l3_label" value="&lt;b&gt;&lt;font style=&quot;font-size:13px;&quot; color=&quot;#FFFFFF&quot;&gt;③ SPECIALIST AGENTS&lt;/font&gt;&lt;/b&gt;" style="rounded=1;arcSize=50;fillColor=#0066CC;strokeColor=#003d7a;html=1;" vertex="1" parent="1">
+          <mxGeometry x="296" y="498" width="220" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="l3_sub" value="&lt;font style=&quot;font-size:10px;font-style:italic;&quot; color=&quot;#607D8B&quot;&gt;Specialist Agents independently analyse their data source and return a FindingsObject&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="530" y="506" width="610" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 1: Database Agent — BUILT -->
+        <mxCell id="ag_db" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ Database Agent&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BBDEFB&quot;&gt;• Split booking detection&lt;br/&gt;• DRA duplicate check&lt;br/&gt;• PV discrepancy rule&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="296" y="542" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 2: Log Agent — ROADMAP -->
+        <mxCell id="ag_log" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;🔲 Log Agent&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFE0B2&quot;&gt;• EOD boundary crossing&lt;br/&gt;• Margin Gen timeout&lt;br/&gt;• Zero margin events&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FF8C00;strokeColor=#E65100;strokeWidth=2;dashed=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="510" y="542" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 3: Kafka Agent — ROADMAP -->
+        <mxCell id="ag_kafka" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;🔲 Kafka Agent&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFE0B2&quot;&gt;• Margin Gen anomalies&lt;br/&gt;• MARK sync issues&lt;br/&gt;• Message lag detection&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FF8C00;strokeColor=#E65100;strokeWidth=2;dashed=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="724" y="542" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 4: Email Agent — ROADMAP -->
+        <mxCell id="ag_email" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;🔲 Email Agent&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFE0B2&quot;&gt;• Exchange search&lt;br/&gt;• Incident correlation&lt;br/&gt;• Resolution history&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FF8C00;strokeColor=#E65100;strokeWidth=2;dashed=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="938" y="542" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 5: Resolution Agent — BUILT -->
+        <mxCell id="ag_res" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ Resolution Agent&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BBDEFB&quot;&gt;• RAG similar incidents&lt;br/&gt;• LLM recommendations&lt;br/&gt;• Triggered if score &gt; 50&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1152" y="542" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 6: ML Agent — BUILT -->
+        <mxCell id="ag_ml" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ ML Agent&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BBDEFB&quot;&gt;• Isolation Forest scoring&lt;br/&gt;• Rolling Z-Score&lt;br/&gt;• Anomaly confidence&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1366" y="542" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- FindingsObject arrows — Agents to Orchestrator -->
+        <mxCell id="arr_ag1_orch" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;strokeColor=#5E35B1;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="ag_db" target="orch_band" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_log_orch" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;strokeWidth=2;dashed=1;" edge="1" parent="1" source="agent_log" target="orchestrator_bg">
+        <mxCell id="arr_ag2_orch" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.28;entryY=0;entryDx=0;entryDy=0;strokeColor=#5E35B1;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="ag_log" target="orch_band" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_kaf_orch" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;strokeWidth=2;dashed=1;" edge="1" parent="1" source="agent_kafka" target="orchestrator_bg">
+        <mxCell id="arr_ag3_orch" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.43;entryY=0;entryDx=0;entryDy=0;strokeColor=#5E35B1;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="ag_kafka" target="orch_band" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_email_orch" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;strokeWidth=2;dashed=1;" edge="1" parent="1" source="agent_email" target="orchestrator_bg">
+        <mxCell id="arr_ag4_orch" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.57;entryY=0;entryDx=0;entryDy=0;strokeColor=#5E35B1;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="ag_email" target="orch_band" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_res_orch" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=2;" edge="1" parent="1" source="agent_res" target="orchestrator_bg">
+        <mxCell id="arr_ag5_orch" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.72;entryY=0;entryDx=0;entryDy=0;strokeColor=#5E35B1;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="ag_res" target="orch_band" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_ml_orch" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=2;" edge="1" parent="1" source="agent_ml" target="orchestrator_bg">
+        <mxCell id="arr_ag6_orch" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#5E35B1&quot;&gt;FindingsObject&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.87;entryY=0;entryDx=0;entryDy=0;strokeColor=#5E35B1;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="ag_ml" target="orch_band" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- ========== ORCHESTRATOR → OUTPUT ========== -->
-        <mxCell id="e_orch_alert" value="Alert" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;fontSize=9;" edge="1" parent="1" source="orchestrator_bg" target="alert_obj">
+        <!-- ========== NEW: TECHNOLOGY LAYER BAND (between Agents and Orchestrator) ========== -->
+        <mxCell id="lg_tech_band" value="" style="rounded=1;arcSize=5;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="296" y="648" width="1260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_tech_label" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#E65100&quot;&gt;Technology: LangGraph (Production)&lt;/font&gt;&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;font style=&quot;font-size:10px;font-style:italic;&quot; color=&quot;#BF360C&quot;&gt;POC: Fixed Python pipeline → Production: LangGraph StateGraph&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="296" y="648" width="1260" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- ========== LAYER 4 — ORCHESTRATOR BAND ========== -->
+        <mxCell id="l4_label" value="&lt;b&gt;&lt;font style=&quot;font-size:13px;&quot; color=&quot;#FFFFFF&quot;&gt;④ ORCHESTRATOR&lt;/font&gt;&lt;/b&gt;" style="rounded=1;arcSize=50;fillColor=#5E35B1;strokeColor=#311B92;html=1;" vertex="1" parent="1">
+          <mxGeometry x="296" y="706" width="200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="l4_sub" value="&lt;font style=&quot;font-size:10px;font-style:italic;&quot; color=&quot;#607D8B&quot;&gt;Orchestrator aggregates all findings and calculates a Risk Score (0–100)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="510" y="714" width="560" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Orchestrator Wide Band -->
+        <mxCell id="orch_band" value="" style="rounded=1;arcSize=5;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#311B92;strokeWidth=2;opacity=15;" vertex="1" parent="1">
+          <mxGeometry x="296" y="744" width="1260" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Orchestrator inner components -->
+        <mxCell id="orch_run" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;Parallel Execution&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#D1C4E9&quot;&gt;asyncio.gather()&lt;br/&gt;DB + ML + Log + Kafka + Email&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#7E57C2;strokeWidth=1.5;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="306" y="752" width="220" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="orch_agg" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;Findings Aggregator&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#D1C4E9&quot;&gt;Merge all FindingsObjects&lt;br/&gt;Build evidence chain&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#7E57C2;strokeWidth=1.5;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="546" y="752" width="220" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="orch_score" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;Risk Scorer&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#D1C4E9&quot;&gt;Severity 30% | Impact 30%&lt;br/&gt;Confidence 25% | Freq 10% | Urgency 5%&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#7E57C2;strokeWidth=1.5;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="786" y="752" width="220" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="orch_gate50" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;Gate: Score &gt; 50&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#D1C4E9&quot;&gt;→ Invoke Resolution Agent&lt;br/&gt;RAG + LLM recommendation&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#7E57C2;strokeWidth=1.5;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1026" y="752" width="220" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="orch_gate80" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;Gate: Score &gt; 80&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#D1C4E9&quot;&gt;→ Auto-raise Alert&lt;br/&gt;→ Produce Alert Object&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#7E57C2;strokeWidth=1.5;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1266" y="752" width="280" height="64" as="geometry" />
+        </mxCell>
+
+        <!-- Horizontal flow arrows inside orchestrator -->
+        <mxCell id="arr_o1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#CE93D8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="orch_run" target="orch_agg" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_alert_api" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" parent="1" source="alert_obj" target="fastapi">
+        <mxCell id="arr_o2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#CE93D8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="orch_agg" target="orch_score" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_api_ui" value="" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" parent="1" source="fastapi" target="streamlit">
+        <mxCell id="arr_o3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#CE93D8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="orch_score" target="orch_gate50" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_o4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#CE93D8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="orch_gate50" target="orch_gate80" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- Training → ML Store -->
-        <mxCell id="e_train_store" value="saves .pkl" style="endArrow=block;endFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=1.5;fontStyle=2;fontSize=9;" edge="1" parent="1" source="training" target="mlstore">
+        <!-- ========== NEW: LangGraph annotation box inside Orchestrator ========== -->
+        <mxCell id="lg_orch_note" value="&lt;b&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#E65100&quot;&gt;LangGraph replaces this in production&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:9px;&quot; color=&quot;#BF360C&quot;&gt;• StateGraph manages agent state&lt;br/&gt;• Conditional edges handle &gt;50 / &gt;80 gates&lt;br/&gt;• Parallel nodes for async agent execution&lt;br/&gt;• Cycles allowed for re-investigation loops&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FF8F00;strokeWidth=2;verticalAlign=top;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1580" y="744" width="200" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_orch_note_arr" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF8F00;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;" edge="1" source="orch_gate80" target="lg_orch_note" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- ========== ENSEMBLE SCORE CALLOUT ========== -->
-        <mxCell id="score_box" value="&lt;b&gt;Risk Score Formula&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;Severity × 0.30&lt;br&gt;Impact × 0.30&lt;br&gt;Confidence × 0.25&lt;br&gt;Frequency × 0.10&lt;br&gt;Urgency × 0.05&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="40" y="690" width="150" height="100" as="geometry" />
+        <!-- ========== LAYER 5 — RESOLUTION AGENT (Step 5) ========== -->
+        <mxCell id="l5_label" value="&lt;b&gt;&lt;font style=&quot;font-size:13px;&quot; color=&quot;#FFFFFF&quot;&gt;⑤ RESOLUTION AGENT&lt;/font&gt;&lt;/b&gt;" style="rounded=1;arcSize=50;fillColor=#0066CC;strokeColor=#003d7a;html=1;" vertex="1" parent="1">
+          <mxGeometry x="296" y="840" width="220" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_score_orch" value="" style="endArrow=open;endFill=0;edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="score_box" target="orch_risk">
+        <mxCell id="l5_sub" value="&lt;font style=&quot;font-size:10px;font-style:italic;&quot; color=&quot;#607D8B&quot;&gt;Resolution Agent retrieves similar past incidents from RAG knowledge base&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="530" y="848" width="580" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Resolution Agent detail boxes -->
+        <mxCell id="res_rag" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ RAG Retrieval&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BBDEFB&quot;&gt;• ChromaDB semantic search&lt;br/&gt;• Top-3 similar incidents&lt;br/&gt;• all-MiniLM-L6-v2 embeddings&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="296" y="880" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="res_llm" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ LLM Recommendation&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BBDEFB&quot;&gt;• Explanation generation&lt;br/&gt;• Step-by-step fix actions&lt;br/&gt;• Confidence score 0–1&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="576" y="880" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="res_alert" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ Alert Object&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BBDEFB&quot;&gt;• alert_id, client_id&lt;br/&gt;• risk_score (0–100)&lt;br/&gt;• findings + recommendation&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="856" y="880" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="res_api" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ FastAPI Backend&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BBDEFB&quot;&gt;• POST /run-detection&lt;br/&gt;• GET /alerts&lt;br/&gt;• PATCH /alerts/{id}&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#0066CC;strokeColor=#003d7a;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1136" y="880" width="260" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows within step 5 layer -->
+        <mxCell id="arr_res1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#5C9BD6;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="res_rag" target="res_llm" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_res2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#5C9BD6;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="res_llm" target="res_alert" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr_res3" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#0066CC&quot;&gt;Alert&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#5C9BD6;strokeWidth=2;endArrow=block;endFill=1;" edge="1" source="res_alert" target="res_api" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- ========== POC STATUS CALLOUT ========== -->
-        <mxCell id="poc_box" value="&lt;b&gt;POC Status&lt;/b&gt;&lt;br&gt;&lt;font style=&apos;font-size:10px&apos;&gt;✅ DB Agent (3 rules)&lt;br&gt;✅ ML Agent (IsoForest)&lt;br&gt;✅ Resolution Agent (RAG)&lt;br&gt;✅ LLM Analyzer&lt;br&gt;✅ Risk Scorer&lt;br&gt;✅ Streamlit Dashboard&lt;br&gt;🔲 Log / Kafka / Email&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=11;arcSize=12;" vertex="1" parent="1">
-          <mxGeometry x="40" y="845" width="160" height="130" as="geometry" />
+        <!-- Arrow from orchestrator to res_rag -->
+        <mxCell id="arr_orch_res" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#5E35B1&quot;&gt;Score &gt; 50&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.15;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#5E35B1;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="orch_band" target="res_rag" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========== LAYER 6 — OUTPUT / DASHBOARD ========== -->
+        <mxCell id="l6_label" value="&lt;b&gt;&lt;font style=&quot;font-size:13px;&quot; color=&quot;#FFFFFF&quot;&gt;⑥ OUTPUT &amp; DASHBOARD&lt;/font&gt;&lt;/b&gt;" style="rounded=1;arcSize=50;fillColor=#2E7D32;strokeColor=#1B5E20;html=1;" vertex="1" parent="1">
+          <mxGeometry x="296" y="978" width="240" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="l6_sub" value="&lt;font style=&quot;font-size:10px;font-style:italic;&quot; color=&quot;#607D8B&quot;&gt;Dashboard shows colour-coded alerts with evidence and recommended actions&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="550" y="986" width="610" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Dashboard boxes -->
+        <mxCell id="dash_red" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;🔴 HIGH RISK&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFCDD2&quot;&gt;Score &gt; 80&lt;br/&gt;Auto-raised alert&lt;br/&gt;Immediate action&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#C62828;strokeColor=#B71C1C;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="296" y="1020" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dash_amber" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;🟡 MEDIUM RISK&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFF9C4&quot;&gt;Score 50–80&lt;br/&gt;Resolution shown&lt;br/&gt;Manual review&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F57F17;strokeColor=#E65100;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="510" y="1020" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dash_green" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;🟢 LOW RISK&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#C8E6C9&quot;&gt;Score &lt; 50&lt;br/&gt;Logged only&lt;br/&gt;No action needed&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=#1B5E20;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="724" y="1020" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dash_ev" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;Evidence Panel&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#C8E6C9&quot;&gt;• DB, Log, Kafka, Email findings&lt;br/&gt;• Similar past incidents&lt;br/&gt;• Expandable per alert&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=#1B5E20;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="938" y="1020" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dash_act" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;✅ Actions&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#C8E6C9&quot;&gt;• Mark as Reviewed&lt;br/&gt;• Raise Case&lt;br/&gt;• Dismiss&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=#1B5E20;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1152" y="1020" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dash_info" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#FFFFFF&quot;&gt;Dashboard Info&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#C8E6C9&quot;&gt;• Last run time&lt;br/&gt;• Total alerts today&lt;br/&gt;• Client &amp; date filters&lt;/font&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=#1B5E20;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1366" y="1020" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow from API to dashboard -->
+        <mxCell id="arr_api_dash" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#2E7D32&quot;&gt;Alert&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#2E7D32;strokeWidth=2.5;endArrow=block;endFill=1;" edge="1" source="res_api" target="dash_ev" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========== OFFLINE TRAINING FLOW ========== -->
+        <mxCell id="train_bg" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="26" y="406" width="198" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="train_title" value="&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#1a1a2e&quot;&gt;⚙️ Offline Training&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="411" width="178" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="train_step1" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#5D4037&quot;&gt;train_ml_model.py&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="434" width="178" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="train_step2" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#5D4037&quot;&gt;↓ Full DB extraction&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="452" width="178" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="train_step3" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#5D4037&quot;&gt;↓ Train Isolation Forest&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="470" width="178" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="train_step4" value="&lt;font style=&quot;font-size:10px;&quot; color=&quot;#5D4037&quot;&gt;↓ Saves .pkl → ML Model Store&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="36" y="488" width="178" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Dashed arrow from training to ML Model Store -->
+        <mxCell id="arr_train_ds6" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#F9A825&quot;&gt;.pkl&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeColor=#F9A825;strokeWidth=1.5;endArrow=block;endFill=1;dashed=1;" edge="1" source="train_bg" target="ds_ml" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========== NEW: PRODUCTION EVOLUTION SIDE PANEL ========== -->
+        <mxCell id="lg_prod_bg" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FF8F00;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="98" width="180" height="620" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_title" value="&lt;b&gt;&lt;font style=&quot;font-size:12px;&quot; color=&quot;#E65100&quot;&gt;⚡ LangGraph&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;&lt;font style=&quot;font-size:11px;&quot; color=&quot;#E65100&quot;&gt;Production Orchestrator&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="100" width="180" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_divider" value="" style="line;strokeColor=#FFB300;strokeWidth=1.5;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="148" width="160" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_poc_header" value="&lt;b&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BF360C&quot;&gt;POC Today&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="162" width="160" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_poc1" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#5D4037&quot;&gt;└── Fixed Python pipeline&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="182" width="165" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_poc2" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#5D4037&quot;&gt;└── Sequential agent calls&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="200" width="165" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_poc3" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#5D4037&quot;&gt;└── Hard-coded gate logic&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="218" width="165" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_divider2" value="" style="line;strokeColor=#FFB300;strokeWidth=1;fillColor=none;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="240" width="160" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_prod_header" value="&lt;b&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#E65100&quot;&gt;Production (with LangGraph)&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="254" width="165" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_p1" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#E65100&quot;&gt;└── StateGraph with shared&lt;br/&gt;      AgentState&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="274" width="165" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_p2" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#E65100&quot;&gt;└── Parallel edges: DB + ML&lt;br/&gt;      + Log + Kafka + Email&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="306" width="165" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_p3" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#E65100&quot;&gt;└── Conditional routing at&lt;br/&gt;      Score gates&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="338" width="165" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_p4" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#E65100&quot;&gt;└── Re-investigation loops&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="370" width="165" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_p5" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#E65100&quot;&gt;└── Persistent state across runs&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="390" width="165" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_divider3" value="" style="line;strokeColor=#FFB300;strokeWidth=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="414" width="160" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_when_header" value="&lt;b&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#BF360C&quot;&gt;Trigger for upgrade:&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="428" width="165" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_when1" value="&lt;font style=&quot;font-size:9px;&quot; color=&quot;#5D4037&quot;&gt;When Log + Kafka + Email&lt;br/&gt;Agents are added and&lt;br/&gt;dynamic routing is needed&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="448" width="165" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="lg_prod_badge" value="&lt;b&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#FFFFFF&quot;&gt;Roadmap Item&lt;/font&gt;&lt;/b&gt;" style="rounded=1;arcSize=20;fillColor=#FF8F00;strokeColor=#E65100;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1626" y="500" width="128" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- Connector arrow from production panel to tech band -->
+        <mxCell id="lg_prod_to_tech" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF8F00;strokeWidth=1.5;endArrow=open;endFill=0;dashed=1;" edge="1" source="lg_prod_bg" target="lg_tech_band" parent="1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
       </root>

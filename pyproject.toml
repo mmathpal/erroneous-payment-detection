@@ -17,10 +17,9 @@ transformers = "^4.35.0"
 xgboost = "^2.0.0"
 lightgbm = "^4.1.0"
 
-# RAG & Vector Store (in-memory)
+# RAG & Vector Store
 langchain = "^0.1.0"
-faiss-cpu = "^1.7.4"
-sentence-transformers = "^2.2.0"
+chromadb = "^0.4.0"
 
 # MCP & Agents
 anthropic = "^0.8.0"

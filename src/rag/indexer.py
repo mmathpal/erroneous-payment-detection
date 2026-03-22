@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-In-Memory RAG Indexer
+RAG Indexer using ChromaDB
 
-Uses FAISS for fast similarity search and sentence-transformers for embeddings.
-All data stored in memory - suitable for POC/testing.
+Uses ChromaDB for vector storage and semantic search.
+Embeddings handled internally by ChromaDB (all-MiniLM-L6-v2).
+Persists to local files in data/chroma/.
 """
 
-import numpy as np
-from typing import List, Dict, Any, Optional, Tuple
-from dataclasses import dataclass
+import chromadb
+from chromadb.utils import embedding_functions
+from dataclasses import dataclass, field
 from datetime import datetime
-import pickle
+from typing import Any, Optional
+from pathlib import Path
 
 
 @dataclass
@@ -22,16 +24,22 @@ class IncidentDocument:
     client_id: str
     incident_type: str
     value_date: str
-    resolution_steps: List[str]
+    resolution_steps: list[str]
     outcome: str
-    metadata: Dict[str, Any]
-    created_at: datetime = None
+    metadata: dict[str, Any]
+    created_at: datetime = field(default_factory=datetime.now)
 
-    def __post_init__(self):
-        if self.created_at is None:
-            self.created_at = datetime.now()
+    def to_text(self) -> str:
+        """Create searchable text for embedding"""
+        return "\n".join([
+            f"Title: {self.title}",
+            f"Type: {self.incident_type}",
+            f"Description: {self.description}",
+            f"Resolution: {' '.join(self.resolution_steps)}",
+            f"Outcome: {self.outcome}"
+        ])
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "incident_id": self.incident_id,
             "title": self.title,
@@ -42,7 +50,7 @@ class IncidentDocument:
             "resolution_steps": self.resolution_steps,
             "outcome": self.outcome,
             "metadata": self.metadata,
-            "created_at": self.created_at.isoformat() if self.created_at else None
+            "created_at": self.created_at.isoformat()
         }
 
 
@@ -54,334 +62,184 @@ class IncidentMatch:
     rank: int
 
 
-class InMemoryRAGIndexer:
+class RAGIndexer:
     """
-    In-memory RAG system using FAISS and sentence-transformers
+    RAG system backed by ChromaDB with local file persistence.
 
-    Features:
-    - Fast semantic search with FAISS
-    - Local embeddings (no API calls)
-    - In-memory storage (no database)
-    - Suitable for POC with <10k documents
+    Files stored in persist_dir (default: data/chroma/).
+    Uses all-MiniLM-L6-v2 embeddings via sentence-transformers.
     """
 
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2", persist_dir: str = "data/rag"):
-        """
-        Initialize RAG indexer
+    COLLECTION_NAME = "incidents"
 
-        Args:
-            model_name: sentence-transformers model name
-            persist_dir: Directory to store persistent FAISS index files
-        """
-        self.model_name = model_name
-        self.embedding_model = None
-        self.index = None
-        self.documents: List[IncidentDocument] = []
-        self.embeddings: Optional[np.ndarray] = None
-        self.embedding_dim = 384  # all-MiniLM-L6-v2 dimension
-        self.persist_dir = persist_dir
-
-        # Lazy load to avoid importing if not used
-        self._model_loaded = False
-
-        # Create persist directory if needed
-        from pathlib import Path
+    def __init__(self, persist_dir: str = "data/chroma") -> None:
         Path(persist_dir).mkdir(parents=True, exist_ok=True)
 
-    def _load_model(self):
-        """Lazy load sentence-transformers model"""
-        if not self._model_loaded:
-            try:
-                from sentence_transformers import SentenceTransformer
-                self.embedding_model = SentenceTransformer(self.model_name)
-                self.embedding_dim = self.embedding_model.get_sentence_embedding_dimension()
-                self._model_loaded = True
-            except ImportError:
-                raise ImportError(
-                    "sentence-transformers not installed. "
-                    "Install with: pip install sentence-transformers"
-                )
+        self._client = chromadb.PersistentClient(path=persist_dir)
+        self._ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="all-MiniLM-L6-v2"
+        )
+        self._collection = self._client.get_or_create_collection(
+            name=self.COLLECTION_NAME,
+            embedding_function=self._ef,
+            metadata={"hnsw:space": "cosine"}
+        )
 
-    def _load_faiss(self):
-        """Lazy load FAISS"""
-        try:
-            import faiss
-            return faiss
-        except ImportError:
-            raise ImportError(
-                "faiss-cpu not installed. "
-                "Install with: pip install faiss-cpu"
-            )
+        # Local cache of IncidentDocument objects keyed by incident_id
+        self._docs: dict[str, IncidentDocument] = {}
 
-    def _create_document_text(self, doc: IncidentDocument) -> str:
-        """
-        Create searchable text from incident document
+        # Populate cache from any already-persisted docs
+        self._reload_cache()
 
-        Args:
-            doc: Incident document
-
-        Returns:
-            Combined text for embedding
-        """
-        parts = [
-            f"Title: {doc.title}",
-            f"Type: {doc.incident_type}",
-            f"Description: {doc.description}",
-            f"Resolution: {' '.join(doc.resolution_steps)}",
-            f"Outcome: {doc.outcome}"
-        ]
-        return "\n".join(parts)
+    def _reload_cache(self) -> None:
+        """Rebuild in-memory doc cache from ChromaDB metadata."""
+        import json
+        existing = self._collection.get(include=["metadatas"])
+        for doc_id, meta in zip(existing["ids"], existing["metadatas"]):
+            if doc_id not in self._docs and meta:
+                try:
+                    self._docs[doc_id] = IncidentDocument(
+                        incident_id=meta["incident_id"],
+                        title=meta["title"],
+                        description=meta["description"],
+                        client_id=meta["client_id"],
+                        incident_type=meta["incident_type"],
+                        value_date=meta["value_date"],
+                        resolution_steps=json.loads(meta["resolution_steps"]),
+                        outcome=meta["outcome"],
+                        metadata=json.loads(meta["extra_metadata"]),
+                    )
+                except (KeyError, json.JSONDecodeError):
+                    pass
 
     def add_incident(self, incident: IncidentDocument) -> None:
-        """
-        Add incident to the index
+        """Add a single incident to the index."""
+        self._add_batch([incident])
 
-        Args:
-            incident: Incident document to add
-        """
-        self._load_model()
+    def add_incidents_batch(self, incidents: list[IncidentDocument]) -> None:
+        """Add multiple incidents efficiently."""
+        self._add_batch(incidents)
 
-        # Generate embedding
-        text = self._create_document_text(incident)
-        embedding = self.embedding_model.encode(text, convert_to_numpy=True)
+    def _add_batch(self, incidents: list[IncidentDocument]) -> None:
+        import json
+        ids, documents, metadatas = [], [], []
+        for inc in incidents:
+            ids.append(inc.incident_id)
+            documents.append(inc.to_text())
+            metadatas.append({
+                "incident_id": inc.incident_id,
+                "title": inc.title,
+                "description": inc.description,
+                "client_id": inc.client_id,
+                "incident_type": inc.incident_type,
+                "value_date": inc.value_date,
+                "resolution_steps": json.dumps(inc.resolution_steps),
+                "outcome": inc.outcome,
+                "extra_metadata": json.dumps(inc.metadata),
+            })
+            self._docs[inc.incident_id] = inc
 
-        # Add to documents
-        self.documents.append(incident)
-
-        # Add to embeddings
-        if self.embeddings is None:
-            self.embeddings = embedding.reshape(1, -1)
-        else:
-            self.embeddings = np.vstack([self.embeddings, embedding])
-
-        # Rebuild FAISS index
-        self._rebuild_index()
-
-    def add_incidents_batch(self, incidents: List[IncidentDocument]) -> None:
-        """
-        Add multiple incidents efficiently
-
-        Args:
-            incidents: List of incident documents
-        """
-        if not incidents:
-            return
-
-        self._load_model()
-
-        # Generate embeddings for all documents
-        texts = [self._create_document_text(doc) for doc in incidents]
-        embeddings = self.embedding_model.encode(texts, convert_to_numpy=True)
-
-        # Add to documents
-        self.documents.extend(incidents)
-
-        # Add to embeddings
-        if self.embeddings is None:
-            self.embeddings = embeddings
-        else:
-            self.embeddings = np.vstack([self.embeddings, embeddings])
-
-        # Rebuild FAISS index
-        self._rebuild_index()
-
-    def _rebuild_index(self) -> None:
-        """Rebuild FAISS index from current embeddings"""
-        if self.embeddings is None or len(self.embeddings) == 0:
-            return
-
-        faiss = self._load_faiss()
-
-        # Create FAISS index (L2 distance, can change to inner product for cosine)
-        self.index = faiss.IndexFlatL2(self.embedding_dim)
-        self.index.add(self.embeddings.astype('float32'))
+        self._collection.upsert(ids=ids, documents=documents, metadatas=metadatas)
 
     def search(
         self,
         query: str,
         top_k: int = 5,
         min_similarity: float = 0.0
-    ) -> List[IncidentMatch]:
+    ) -> list[IncidentMatch]:
         """
-        Semantic search for similar incidents
+        Semantic search for similar incidents.
 
         Args:
-            query: Search query
+            query: Natural language search query
             top_k: Number of results to return
-            min_similarity: Minimum similarity threshold (0-1)
+            min_similarity: Minimum cosine similarity threshold (0-1)
 
         Returns:
-            List of matched incidents with similarity scores
+            List of IncidentMatch sorted by similarity descending
         """
-        if not self.documents:
+        n = min(top_k, self._collection.count())
+        if n == 0:
             return []
 
-        self._load_model()
+        results = self._collection.query(
+            query_texts=[query],
+            n_results=n,
+            include=["metadatas", "distances"]
+        )
 
-        # Generate query embedding
-        query_embedding = self.embedding_model.encode(query, convert_to_numpy=True)
-        query_embedding = query_embedding.reshape(1, -1).astype('float32')
-
-        # Search FAISS index
-        distances, indices = self.index.search(query_embedding, min(top_k, len(self.documents)))
-
-        # Convert distances to similarity scores (L2 to cosine-like)
-        # Normalize: similarity = 1 / (1 + distance)
-        similarities = 1.0 / (1.0 + distances[0])
-
-        # Build results
-        results = []
-        for rank, (idx, sim) in enumerate(zip(indices[0], similarities)):
-            if sim >= min_similarity:
-                match = IncidentMatch(
-                    incident=self.documents[idx],
-                    similarity_score=float(sim),
+        matches = []
+        for rank, (doc_id, distance) in enumerate(
+            zip(results["ids"][0], results["distances"][0])
+        ):
+            # ChromaDB cosine space returns distance (0=identical, 2=opposite)
+            similarity = 1.0 - (distance / 2.0)
+            if similarity < min_similarity:
+                continue
+            incident = self._docs.get(doc_id)
+            if incident:
+                matches.append(IncidentMatch(
+                    incident=incident,
+                    similarity_score=round(similarity, 4),
                     rank=rank + 1
-                )
-                results.append(match)
+                ))
 
-        return results
+        return matches
 
     def search_by_type(
         self,
         query: str,
         incident_type: str,
         top_k: int = 5
-    ) -> List[IncidentMatch]:
-        """
-        Search for similar incidents of a specific type
+    ) -> list[IncidentMatch]:
+        """Search filtered by incident_type using ChromaDB metadata filtering."""
+        n = min(top_k, self._collection.count())
+        if n == 0:
+            return []
 
-        Args:
-            query: Search query
-            incident_type: Filter by incident type
-            top_k: Number of results
+        results = self._collection.query(
+            query_texts=[query],
+            n_results=n,
+            where={"incident_type": incident_type},
+            include=["metadatas", "distances"]
+        )
 
-        Returns:
-            List of matched incidents
-        """
-        # Get more results than needed for filtering
-        all_results = self.search(query, top_k=top_k * 3)
+        matches = []
+        for rank, (doc_id, distance) in enumerate(
+            zip(results["ids"][0], results["distances"][0])
+        ):
+            similarity = 1.0 - (distance / 2.0)
+            incident = self._docs.get(doc_id)
+            if incident:
+                matches.append(IncidentMatch(
+                    incident=incident,
+                    similarity_score=round(similarity, 4),
+                    rank=rank + 1
+                ))
 
-        # Filter by type
-        filtered = [
-            match for match in all_results
-            if match.incident.incident_type == incident_type
-        ]
-
-        # Re-rank
-        for rank, match in enumerate(filtered[:top_k]):
-            match.rank = rank + 1
-
-        return filtered[:top_k]
+        return matches
 
     def get_incident_by_id(self, incident_id: str) -> Optional[IncidentDocument]:
-        """
-        Get incident by ID
+        """Get incident by ID."""
+        return self._docs.get(incident_id)
 
-        Args:
-            incident_id: Incident identifier
-
-        Returns:
-            Incident document or None
-        """
-        for doc in self.documents:
-            if doc.incident_id == incident_id:
-                return doc
-        return None
-
-    def save_to_disk(self) -> None:
-        """
-        Save index to persistent storage (FAISS index + metadata)
-
-        Creates files in persist_dir:
-        - faiss.index: FAISS index file
-        - metadata.pkl: Documents and embeddings
-        """
-        import os
-        faiss = self._load_faiss()
-
-        # Save FAISS index
-        if self.index is not None:
-            index_path = os.path.join(self.persist_dir, "faiss.index")
-            faiss.write_index(self.index, index_path)
-            print(f"[RAG] Saved FAISS index to {index_path}")
-
-        # Save metadata (documents, embeddings, config)
-        metadata = {
-            "documents": self.documents,
-            "embeddings": self.embeddings,
-            "model_name": self.model_name,
-            "embedding_dim": self.embedding_dim
-        }
-
-        metadata_path = os.path.join(self.persist_dir, "metadata.pkl")
-        with open(metadata_path, 'wb') as f:
-            pickle.dump(metadata, f)
-        print(f"[RAG] Saved metadata to {metadata_path}")
-
-    def load_from_disk(self) -> bool:
-        """
-        Load index from persistent storage
-
-        Returns:
-            True if loaded successfully, False if no index found
-        """
-        import os
-        faiss = self._load_faiss()
-
-        index_path = os.path.join(self.persist_dir, "faiss.index")
-        metadata_path = os.path.join(self.persist_dir, "metadata.pkl")
-
-        # Check if files exist
-        if not os.path.exists(index_path) or not os.path.exists(metadata_path):
-            return False
-
-        try:
-            # Load FAISS index
-            self.index = faiss.read_index(index_path)
-            print(f"[RAG] Loaded FAISS index from {index_path}")
-
-            # Load metadata
-            with open(metadata_path, 'rb') as f:
-                metadata = pickle.load(f)
-
-            self.documents = metadata["documents"]
-            self.embeddings = metadata["embeddings"]
-            self.model_name = metadata["model_name"]
-            self.embedding_dim = metadata["embedding_dim"]
-            print(f"[RAG] Loaded metadata from {metadata_path}")
-
-            return True
-        except Exception as e:
-            print(f"[RAG] Error loading from disk: {e}")
-            return False
-
-    def get_stats(self) -> Dict[str, Any]:
-        """Get indexer statistics"""
+    def get_stats(self) -> dict[str, Any]:
+        """Get indexer statistics."""
         return {
-            "total_documents": len(self.documents),
-            "embedding_dimension": self.embedding_dim,
-            "model_name": self.model_name,
-            "index_built": self.index is not None,
-            "incident_types": list(set(doc.incident_type for doc in self.documents))
+            "total_documents": self._collection.count(),
+            "incident_types": list({d.incident_type for d in self._docs.values()}),
+            "backend": "chromadb",
         }
 
 
-# Global singleton instance
-_global_indexer: Optional[InMemoryRAGIndexer] = None
+# Global singleton
+_global_indexer: Optional[RAGIndexer] = None
 
 
-def get_rag_indexer() -> InMemoryRAGIndexer:
-    """
-    Get global RAG indexer instance (singleton)
-
-    Automatically loads from persistent storage if available
-    """
+def get_rag_indexer() -> RAGIndexer:
+    """Get global RAGIndexer singleton (auto-loads from persistent storage)."""
     global _global_indexer
     if _global_indexer is None:
-        _global_indexer = InMemoryRAGIndexer()
-        # Try to load from disk
-        loaded = _global_indexer.load_from_disk()
-        if loaded:
-            print(f"[RAG] Loaded {len(_global_indexer.documents)} incidents from persistent storage")
+        _global_indexer = RAGIndexer()
+        print(f"[RAG] Loaded {_global_indexer.get_stats()['total_documents']} incidents from persistent storage")
     return _global_indexer

@@ -241,7 +241,7 @@ def load_incidents_to_rag(indexer) -> int:
     Load sample incidents into RAG indexer
 
     Args:
-        indexer: InMemoryRAGIndexer instance
+        indexer: RAGIndexer instance
 
     Returns:
         Number of incidents loaded

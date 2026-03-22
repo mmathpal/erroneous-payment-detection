@@ -12,7 +12,8 @@
       "Bash(poetry add pyodbc)",
       "Bash(poetry show)",
       "Bash(git restore src/ui/dashboard.py)",
-      "Bash(python -m py_compile src/ui/dashboard.py)"
+      "Bash(python -m py_compile src/ui/dashboard.py)",
+      "Bash(python3 -c \"\nimport xml.etree.ElementTree as ET\ntree = ET.parse\\('/Users/mmathpal/MyStuff/MyGitHub/erroneous-payment-detection/docs/architecture.drawio'\\)\nroot = tree.getroot\\(\\)\nprint\\('XML is valid'\\)\ncells = root.findall\\('.//{http://}mxCell'\\) + root.findall\\('.//mxCell'\\)\nprint\\(f'Total mxCell elements: {len\\(cells\\)}'\\)\n\")"
     ],
     "deny": [],
     "ask": []

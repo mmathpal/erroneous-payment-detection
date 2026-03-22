@@ -1,11 +1,11 @@
 """
 RAG (Retrieval-Augmented Generation) Module
 
-Provides in-memory vector search for historical incident retrieval.
+Provides ChromaDB-backed vector search for historical incident retrieval.
 """
 
 from src.rag.indexer import (
-    InMemoryRAGIndexer,
+    RAGIndexer,
     IncidentDocument,
     IncidentMatch,
     get_rag_indexer
@@ -16,7 +16,7 @@ from src.rag.sample_incidents import (
 )
 
 __all__ = [
-    "InMemoryRAGIndexer",
+    "RAGIndexer",
     "IncidentDocument",
     "IncidentMatch",
     "get_rag_indexer",

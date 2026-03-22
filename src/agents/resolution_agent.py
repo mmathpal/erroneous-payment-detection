@@ -77,9 +77,7 @@ class ResolutionAgent:
         if self.indexer.get_stats()['total_documents'] == 0:
             num_loaded = load_incidents_to_rag(self.indexer)
             print(f"[ResolutionAgent] Loaded {num_loaded} historical incidents into RAG")
-            # Save to persistent storage
-            self.indexer.save_to_disk()
-            print(f"[ResolutionAgent] Saved RAG index to persistent storage")
+            # ChromaDB persists automatically — no explicit save needed
 
     def analyze_findings(
         self,
